@@ -9,6 +9,26 @@ f: total cost of the node.
 
 # blep
 
+import logging
+import os
+import sys
+
+def setup_custom_logger(name):
+    formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
+                                  datefmt='%Y-%m-%d %H:%M:%S')
+    handler = logging.FileHandler('log.txt', mode='w')
+    handler.setFormatter(formatter)
+    #screen_handler = logging.StreamHandler(stream=sys.stdout)
+    #screen_handler.setFormatter(formatter)
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+    #logger.addHandler(screen_handler)
+    return logger
+
+logger = setup_custom_logger("a-star")
+
+
 class Node:
     def __init__(self, parent, position, g=0, h=0, f=0):
         self.parent = parent
@@ -53,12 +73,14 @@ def astar(maze, start, end, allow_diag=False):
     else:
         adjacent_squares = ((0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1))
 
+    logger.debug(msg="starting while loop")
     while len(open_list) > 0:
 
         # do we need to set this if we are prioq later?
         current_node = open_list[0] # get the first node in the open list.
         current_index = 0
 
+        logger.info("currently on position:" + str(current_node.position))
         # priority q (check the one with the shortest list).
         # todo: replace this with a proper queue
         for index, item in enumerate(open_list):
