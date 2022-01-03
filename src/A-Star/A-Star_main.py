@@ -160,8 +160,19 @@ def run_astar():
     end = (7, 6)
 
     path = astar(maze, start, end)
-    print(path)
+    return [path, maze]
+
+def visualizer(path, maze):
+    for coordinate in path:
+        maze[coordinate[0]][coordinate[1]] = "#"
+
+    for i in range(len(maze)):
+        for j in maze[i]:
+            print (j, end = " ")
+        print("")
+
 
 if __name__ == "__main__":
     print("entering main function for A-Star main")
-    run_astar()
+
+    visualizer(run_astar()[0], run_astar()[1])
