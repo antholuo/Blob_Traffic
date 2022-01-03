@@ -110,4 +110,4 @@ def astar(maze, start, end, allow_diag=False):
 
 
 if __name__ == "__main__":
-    print("main")
+    print("main start")
