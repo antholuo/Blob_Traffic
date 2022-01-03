@@ -12,6 +12,7 @@ f: total cost of the node.
 import logging
 import os
 import sys
+import time
 
 def setup_custom_logger(name):
     formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
@@ -44,6 +45,7 @@ def return_path(current_node):
     path = []
     current = current_node
     while current is not None:
+        logger.info("backtrace path is: " + str(current.position))
         path.append(current.position)
         current=current.parent
     return path[::-1] # returns traversed path
