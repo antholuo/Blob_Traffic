@@ -93,7 +93,7 @@ def astar(maze, start, end, allow_diag=False):
         closed_list.append(current_node)
 
         # we have reached a solution, return the path.
-        if current_node == end_node:
+        if current_node.position == end_node.position:
             return return_path(current_node)
 
         children = []
