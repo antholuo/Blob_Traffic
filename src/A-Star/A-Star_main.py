@@ -79,14 +79,13 @@ def astar(maze, start, end, allow_diag=False):
         for next_position in next_squares:
             node_position = (current_node.position[0] + next_position[0], current_node.position[1] + next_position[1])
 
-            if 0 <= node_position[0] <= len(maze[0]) or 0 <= node_position[1] <= len(maze):
-                if maze[node_position[0]][node_position[1]] ==
-    0
-    :    for child in children:
-        as
-       continue
-            else:
+            if node_position[0] < 0 or node_position[0] > len(maze[0]) or node_position[1] < 0 or node_position[1] > len(maze):
                 continue
+            if maze[node_position[0]][node_position[1]] == 1:
+                continue
+
+        for child in children:
+
 
 
 
