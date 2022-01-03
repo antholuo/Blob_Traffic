@@ -101,8 +101,10 @@ def astar(maze, start, end, allow_diag=False):
                 continue
 
             # Create the f, g, and h values
-            child.g = current_node.g + 1
-            child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
+            child.g = current_node.g + (((child.position[0] - child.parent.position[0]) ** 2) + (
+                        (child.position[1] - child.parent.position[1]) ** 2)) ** 0.5
+            child.h = (((child.position[0] - end_node.position[0]) ** 2) + (
+                        (child.position[1] - end_node.position[1]) ** 2)) ** 0.5
             child.f = child.g + child.h
 
             # if child is already on the open list
@@ -117,8 +119,6 @@ def astar(maze, start, end, allow_diag=False):
                 # todo: verify if this is the correct way to push child into open_list
                 # push child to open_list
                 open_list.append(child)
-
-
 
 
 if __name__ == "__main__":
