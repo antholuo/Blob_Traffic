@@ -7,6 +7,7 @@ h: heuristic, estimated * cost * between current node to end node
 f: total cost of the node.
 """
 
+# blep
 
 class Node:
     def __init__(self, parent, position, g=0, h=0, f=0):
@@ -78,4 +79,16 @@ def astar(maze, start, end, allow_diag=False):
         for next_position in next_squares:
             node_position = (current_node.position[0] + next_position[0], current_node.position[1] + next_position[1])
 
-            if node_position[0] <= maze[0] and node_position[]
+            if 0 <= node_position[0] <= len(maze[0]) or 0 <= node_position[1] <= len(maze):
+                if maze[node_position[0]][node_position[1]] ==
+    0
+    :    for child in children:
+        as
+       continue
+            else:
+                continue
+
+
+
+if __name__ == "__main__":
+    print("main")
