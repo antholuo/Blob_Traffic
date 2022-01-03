@@ -1,0 +1,11 @@
+Visualizations
+------------------------------
+- to be done using Glumpy (pray for us).
+    - https://glumpy.readthedocs.io/en/latest/index.html
+
+Source
+------------------------------
+- A*
+    - https://medium.com/@nicholas.w.swift/easy-a-star-pathfinding-7e6689c7f7b2
+- Classes for locations and blobs
+- who knows.
