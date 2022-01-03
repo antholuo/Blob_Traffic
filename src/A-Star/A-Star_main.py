@@ -49,9 +49,9 @@ def astar(maze, start, end, allow_diag=False):
 
     # gives us the direction of motion to reach the next squares from our current square
     if not allow_diag:
-        next_squares = ((0, -1), (0, 1), (-1, 0), (1, 0))
+        adjacent_squares = ((0, -1), (0, 1), (-1, 0), (1, 0))
     else:
-        next_squares = ((0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1))
+        adjacent_squares = ((0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1))
 
     while len(open_list) > 0:
 
@@ -76,13 +76,24 @@ def astar(maze, start, end, allow_diag=False):
 
         children = []
 
-        for next_position in next_squares:
+        # checks to see if neighbouring squares are valid places to move, if so, add it to the children of the current node
+        for next_position in adjacent_squares:
+
+            # node position is the position of the current node plus which ever direction we are going in
             node_position = (current_node.position[0] + next_position[0], current_node.position[1] + next_position[1])
 
+            # checks to see if position is inside grid
             if node_position[0] < 0 or node_position[0] > len(maze[0]) or node_position[1] < 0 or node_position[1] > len(maze):
                 continue
+
+            # checks to see if position is a wall/impassable
             if maze[node_position[0]][node_position[1]] == 1:
                 continue
+
+            new_node = Node(current_node, node_position)
+
+            children.append(new_node)
+
 
         for child in children:
             # Child is on the closed list
@@ -106,6 +117,7 @@ def astar(maze, start, end, allow_diag=False):
                 # todo: verify if this is the correct way to push child into open_list
                 # push child to open_list
                 open_list.append(child)
+
 
 
 
