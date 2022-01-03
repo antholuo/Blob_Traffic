@@ -83,7 +83,7 @@ def astar(maze, start, end, allow_diag=False):
             node_position = (current_node.position[0] + next_position[0], current_node.position[1] + next_position[1])
 
             # checks to see if position is inside grid
-            if node_position[0] < 0 or node_position[0] > len(maze[0]) or node_position[1] < 0 or node_position[1] > len(maze):
+            if node_position[0] < 0 or node_position[0] > (len(maze[0]) - 1) or node_position[1] < 0 or node_position[1] > (len(maze) - 1):
                 continue
 
             # checks to see if position is a wall/impassable
@@ -120,6 +120,24 @@ def astar(maze, start, end, allow_diag=False):
                 # push child to open_list
                 open_list.append(child)
 
+def run_astar():
+    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+    start = (0, 0)
+    end = (7, 6)
+
+    path = astar(maze, start, end)
+    print(path)
 
 if __name__ == "__main__":
-    print("main start")
+    print("entering main function for A-Star main")
+    run_astar()
