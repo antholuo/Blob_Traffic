@@ -13,6 +13,10 @@ import logging
 import os
 import sys
 import time
+import platform
+
+print(sys.version, sys.version_info)
+print(platform.python_implementation(), platform.python_version(), platform.python_compiler())
 
 def setup_custom_logger(name):
     formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
