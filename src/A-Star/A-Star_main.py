@@ -160,10 +160,35 @@ def run_astar():
             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-    start = (0, 0)
-    end = (7, 6)
 
-    path = astar(maze, start, end)
+    """
+    Here we define MAZE #2, which is going to be written in x,y (column, row) format, but should look as such:
+        0 1 2 3 4 5 6 7 8 9
+        -------------------
+    0 | 0 0 0 0 0 0 1 0 0 1
+    1 | 0 0 0 0 0 1 1 0 1 0
+    2 | 0 0 0 0 0 1 0 0 1 0
+    3 | 0 0 0 0 0 0 0 1 1 0
+    4 | 0 0 1 0 0 1 0 0 0 0
+    5 | 0 0 1 1 1 1 0 0 0 0
+    6 | 0 0 0 0 1 0 0 0 1 0
+    """
+
+    maze2 = [[0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 1, 1, 0],
+             [0, 0, 0, 0, 0, 1, 0],
+             [0, 0, 0, 0, 0, 1, 1],
+             [0, 1, 1, 0, 1, 1, 0],
+             [1, 1, 0, 0, 0, 0, 0],
+             [0, 0, 0, 1, 0, 0, 0],
+             [0, 1, 1, 1, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0]]
+
+    start = (0, 0)
+    end = (0, 7)
+
+    path = astar(maze2, start, end)
     return [path, maze]
 
 # simple visualization of the maze and the path A* takes
