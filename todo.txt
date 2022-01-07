@@ -3,6 +3,15 @@ Visualizations
 - to be done using Glumpy (pray for us).
     - https://glumpy.readthedocs.io/en/latest/index.html
 
+Simulation Environment Parameters
+------------------------------------------------------------------------------------------------------------------------
+- Represented as a 3d array.
+    - [x][y] = [height, terrain type].
+    - where x,y     defined as cartesian coordinate plane looking down
+            height  defined as the height of the terrain from -5 to 5, with 0 being "ground" or "reference neutral"
+            terrain defined as the type of terrain (currently only WALL and NOTWALL, with WALL being impassable).
+
+
 Source
 ------------------------------
 - A*
