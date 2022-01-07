@@ -44,6 +44,14 @@ class Node:
         self.h = h
         self.f = f
 
+    def __eq__(self, other):
+        """
+        Equals function within our Node to allow us to do comparisons on the node.
+        :param other:
+        :return:
+        """
+        return self.position == other.position # a lot simpler than going through the list in a convoluted way
+
 
 def return_path(current_node):
     path = []
@@ -126,6 +134,7 @@ def astar(maze, start, end, allow_diag=False):
         for child in children:
             # Child is on the closed list
             if child in closed_list:
+                print("child in closed list")
                 continue
 
             # Create the f, g, and h values
@@ -137,6 +146,7 @@ def astar(maze, start, end, allow_diag=False):
 
             # if child is already on the open list
             if child in open_list:
+                print("child in open list")
                 idx = open_list.index(child)
                 if child.g < open_list[idx].g:
                     print ("code reached")
@@ -187,7 +197,7 @@ def run_astar():
              [1, 0, 0, 0, 0, 0, 0]]
 
     start = (0, 0)
-    end = (0, 7)
+    end = (0,7)
 
     path = astar(maze, start, end)
     return [path, maze]
