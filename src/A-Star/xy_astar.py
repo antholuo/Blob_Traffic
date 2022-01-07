@@ -38,6 +38,9 @@ class Node:
         self.h = h
         self.f = f
 
+    def __eq__(self, other):
+        return self.position == other.position
+
 def return_path(current_node):
     path = []
     current = current_node
@@ -166,7 +169,7 @@ def run_astar():
              [1, 0, 0, 0, 0, 0, 0]]
 
     start = (0, 0)
-    end = (6, 4)
+    end = (7, 0)
     print("start = ", start)
     print("end = ", end)
     path = astar(maze2, start, end)
@@ -175,21 +178,19 @@ def run_astar():
 # simple visualization of the maze and the path A* takes
 def visualization(path, maze):
     for coordinate in path:
-        maze[coordinate[1]][coordinate[0]] = "#"
+        maze[coordinate[0]][coordinate[1]] = "#"
 
-    yx_maze = []
-    for x in range(len(maze)):
-        for y in range(len(maze[1])):
-            if (x,y) in path:
-                print("#", end = " ")
-            else:
-                print(maze[x][y], end = "")
+    x = 0
+    y = 0
+    max_x = len(maze)
+    max_y = len(maze[1])
+    while y < max_y:
+        x = 0
         print()
-
-    for i in range(len(yx_maze[1])):
-        for j in yx_maze[i]:
-            print (j, end = " ")
-        print("")
+        while x < max_x:
+            print(maze[x][y], end = " ")
+            x += 1
+        y += 1
 
 if __name__ == "__main__":
     print("entering main function for A-Star main")
