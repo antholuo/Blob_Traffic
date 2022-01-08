@@ -9,7 +9,7 @@ format for the rest of our code.
 """
 
 
-def yx_to_xy(map):
+def yx_to_xy(yx_grid):
     """Turns a y/x grid (row, column) into an x/y grid.
     Iterates through the yx grid keeping track of the current location, and maps that value to the corresponding
     position within the xy grid
@@ -26,6 +26,8 @@ def yx_to_xy(map):
     0 d e f          [e, b],
       0 1 2          [f, c]]
     """
+    xy_grid = []
+    len_x = len(yx_grid[0]) # any index works, grid should be same length anywhere.
 
 
 if __name__ == "__main__":
