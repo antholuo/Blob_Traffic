@@ -39,6 +39,7 @@ class Node:
         self.f = f
 
     def __eq__(self, other):
+        """Overrides the bulitin == function to compare position instead of actual node classes."""
         return self.position == other.position
 
 def return_path(current_node):
