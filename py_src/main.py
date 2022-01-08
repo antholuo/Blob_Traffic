@@ -40,3 +40,27 @@ Step 1:
         -> Animate the grid
         -> Animate the blob (dot?).
 """
+
+
+"""
+THE GRID
+========================================================================================================================
+Everything lives on the grid. It defines our world. 
+
+Currently, we have elevation steps as integers from -5 to +5, with 0 being our reference or "ground" elevation.
+Walls or other impassable areas are defined using characters, currently denoted 'x'
+
+Now, I need to somehow generate a grid....let's start simple with only 0 and x...
+I've added row and column numbers for simplicity...
+
+7 0 X 0 0 0 0 0 0 0 0 
+6 0 X X 0 X X X X X 0
+5 0 0 X 0 0 0 X 0 0 0
+4 0 0 0 0 X X X 0 X X
+3 0 X X 0 X 0 0 0 X 0
+2 0 X 0 0 X 0 X X X 0
+1 0 X 0 X X 0 X 0 X 0
+0 0 0 0 0 X 0 0 0 0 0
+^ 0 1 2 3 4 5 6 7 8 9 < Column number (+x)
+Row number (+y)
+"""
