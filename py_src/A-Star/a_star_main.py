@@ -1,7 +1,7 @@
 """
-A-Star_main.py
+a_star_main.py
 ================================
-re-written a-star search algorithm to support searching in x,y (column, row) format for better compatibility with the rest of our code.
+re-written a-star search algorithm to support searching in x,y (column, row) format.
 """
 
 import logging
@@ -13,7 +13,9 @@ import platform
 print(sys.version, sys.version_info)
 print(platform.python_implementation(), platform.python_version(), platform.python_compiler())
 
-def setup_custom_logger(name):
+
+def setup_custom_logger(name, logger):
+    """Sets up custom logger."""
     formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
                                   datefmt='%Y-%m-%d %H:%M:%S')
     handler = logging.FileHandler('log.txt', mode='w')
@@ -29,26 +31,33 @@ def setup_custom_logger(name):
 
 logger = setup_custom_logger("xy_a-star")
 
+
 class Node:
+    """Represents a node or square on our grid"""
+
     def __init__(self, parent, position, g=0, h=0, f=0):
-        self.parent     = parent
-        self.position   = position
+        self.parent = parent
+        self.position = position
 
         self.g = g
         self.h = h
         self.f = f
 
     def __eq__(self, other):
+        """Overrides the bulitin == function to compare position instead of actual node classes."""
         return self.position == other.position
 
+
 def return_path(current_node):
-    path = []
+    """returns the path that we traversed! Hopefully the shortest :D"""
+    ret_path = []
     current = current_node
     while current is not None:
         logger.info("backtrace path is: " + str(current.position))
-        path.append(current.position)
+        ret_path.append(current.position)
         current = current.parent
-    return path[::-1] # returns traversed path
+    return ret_path[::-1]  # returns traversed path
+
 
 def astar(maze, start, end, allow_diag=False):
     start_node = Node(None, start)
@@ -95,7 +104,8 @@ def astar(maze, start, end, allow_diag=False):
             node_position = (current_node.position[0] + next_position[0], current_node.position[1] + next_position[1])
 
             # this is different because of flipped x and y
-            if node_position[0] < 0 or node_position[0] > (len(maze) -1) or node_position[1]<0 or node_position[1] > (len(maze[0])-1):
+            if node_position[0] < 0 or node_position[0] > (len(maze) - 1) or \
+                    node_position[1] < 0 or node_position[1] > (len(maze[0]) - 1):
                 continue
 
             # check for wall/impassable
@@ -131,6 +141,7 @@ def astar(maze, start, end, allow_diag=False):
                     # push child to open_list
                     open_list.append(child)
 
+
 def run_astar():
     maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -143,30 +154,32 @@ def run_astar():
             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-
     """
     Here we define MAZE #2, which is going to be written in x,y (column, row) format, but should look as such:
-        0 1 2 3 4 5 6 7 8 9
-        -------------------
-    0 | 0 0 0 0 0 0 1 0 0 1
-    1 | 0 0 0 0 0 1 1 0 1 0
-    2 | 0 0 0 0 0 1 0 0 1 0
+    
+    Note: we follow RHR coordinate system with Z out of the screen.
+    
+    6 | 0 0 0 0 0 0 1 0 0 1
+    5 | 0 0 0 0 0 1 1 0 1 0
+    4 | 0 0 0 0 0 1 0 0 1 0
     3 | 0 0 0 0 0 0 0 1 1 0
-    4 | 0 0 1 0 0 1 0 0 0 0
-    5 | 0 0 1 1 1 1 0 0 0 0
-    6 | 0 0 0 0 1 0 0 0 1 0
+    2 | 0 0 1 0 0 1 0 0 0 0
+    1 | 0 0 1 1 1 1 0 0 0 0
+    0 | 0 0 0 0 1 0 0 0 1 0
+        -------------------
+        0 1 2 3 4 5 6 7 8 9
     """
 
     maze2 = [[0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 1, 1, 0],
-             [0, 0, 0, 0, 0, 1, 0],
-             [0, 0, 0, 0, 0, 1, 1],
-             [0, 1, 1, 0, 1, 1, 0],
+             [0, 1, 1, 0, 0, 0, 0],
+             [0, 1, 0, 0, 0, 0, 0],
              [1, 1, 0, 0, 0, 0, 0],
+             [0, 1, 1, 0, 1, 1, 0],
+             [0, 0, 0, 0, 0, 1, 1],
              [0, 0, 0, 1, 0, 0, 0],
-             [0, 1, 1, 1, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0]]
+             [1, 0, 0, 1, 1, 1, 0],
+             [0, 0, 0, 0, 0, 0, 1]]
 
     start = (0, 0)
     end = (9, 2)
@@ -174,6 +187,7 @@ def run_astar():
     print("end = ", end)
     path = astar(maze2, start, end)
     return [path, maze2]
+
 
 # simple visualization of the maze and the path A* takes
 def visualization(path, maze):
@@ -188,9 +202,10 @@ def visualization(path, maze):
         x = 0
         print()
         while x < max_x:
-            print(maze[x][y], end = " ")
+            print(maze[x][max_y - y - 1], end=" ")
             x += 1
         y += 1
+
 
 if __name__ == "__main__":
     print("entering main function for A-Star main")
@@ -199,4 +214,3 @@ if __name__ == "__main__":
     print(path)
 
     visualization(path, maze)
-

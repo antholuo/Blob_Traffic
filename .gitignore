@@ -125,4 +125,4 @@ dmypy.json
 
 .idea/
 
-src/A-Star/log.txt
+py_src/A-Star/log.txt
