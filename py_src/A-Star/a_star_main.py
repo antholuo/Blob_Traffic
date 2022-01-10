@@ -111,7 +111,7 @@ def astar(maze, start, end, allow_diag=False):
                 continue
 
             # check for wall/impassable
-            if maze[node_position[0]][node_position[1]] == 1:
+            if maze[node_position[0]][node_position[1]] == 9: # question: not the correct np way to reference?
                 continue
 
             new_node = Node(current_node, node_position)
@@ -145,15 +145,15 @@ def astar(maze, start, end, allow_diag=False):
 
 
 def run_astar():
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    maze = [[0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     """
@@ -173,20 +173,22 @@ def run_astar():
     """
 
     maze2 = [[0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0],
-             [0, 1, 1, 0, 0, 0, 0],
-             [0, 1, 0, 0, 0, 0, 0],
-             [1, 1, 0, 0, 0, 0, 0],
-             [0, 1, 1, 0, 1, 1, 0],
-             [0, 0, 0, 0, 0, 1, 1],
-             [0, 0, 0, 1, 0, 0, 0],
-             [1, 0, 0, 1, 1, 1, 0],
-             [0, 0, 0, 0, 0, 0, 1]]
+             [0, 0, 9, 0, 0, 0, 0],
+             [0, 9, 9, 0, 0, 0, 0],
+             [0, 9, 0, 0, 0, 0, 0],
+             [9, 9, 0, 0, 0, 0, 0],
+             [0, 9, 9, 0, 9, 9, 0],
+             [0, 0, 0, 0, 0, 9, 9],
+             [0, 0, 0, 9, 0, 0, 0],
+             [9, 0, 0, 9, 9, 9, 0],
+             [0, 0, 0, 0, 0, 0, 9]]
 
     start = (0, 0)
-    end = (9,0)
+    end = (7,6)
 
-    np_maze = np.array(maze2) # keep the original maze since we need to re-draw over it
+    # saving as np.byte to get int8 (we don't need to represent that many levels yet), plus, we can always go up!
+    np_maze = np.array(maze2, dtype=np.byte) # keep the original maze since we need to re-draw over it
+    print(np_maze.dtype)
     print("start = ", start)
     print("end = ", end)
     path = astar(np_maze, start, end)
