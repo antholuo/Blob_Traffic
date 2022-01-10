@@ -10,11 +10,13 @@ import sys
 import time
 import platform
 
+import numpy as np
+
 print(sys.version, sys.version_info)
 print(platform.python_implementation(), platform.python_version(), platform.python_compiler())
 
 
-def setup_custom_logger(name, logger):
+def setup_custom_logger(name):
     """Sets up custom logger."""
     formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
                                   datefmt='%Y-%m-%d %H:%M:%S')
@@ -182,10 +184,12 @@ def run_astar():
              [0, 0, 0, 0, 0, 0, 1]]
 
     start = (0, 0)
-    end = (9, 2)
+    end = (9,0)
+
+    np_maze = np.array(maze2) # keep the original maze since we need to re-draw over it
     print("start = ", start)
     print("end = ", end)
-    path = astar(maze2, start, end)
+    path = astar(np_maze, start, end)
     return [path, maze2]
 
 

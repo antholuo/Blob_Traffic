@@ -4,8 +4,8 @@ ingest_grid.py, written as part of Blob_Traffic project (https://github.com/anth
 January 2022
 Anthony Luo (antholuo@gmail.com), Christina Zhang (christinaytzhangroxs@gmail.com)
 ---------------------------------------
-    This file is designed to take a line-by-line entry (cin) or a text file (preferred) and parse it into a numpy array
-workable by the rest of our code.
+    This file is designed to take a line-by-line entry (cin) or a text file (preferred) and parse it into either a
+numpy array or a python list.
 Todo: The rest of our pathfinding code needs to be updated to accept numpy arrays.
 """
 
