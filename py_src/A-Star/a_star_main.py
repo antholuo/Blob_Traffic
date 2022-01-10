@@ -10,11 +10,13 @@ import sys
 import time
 import platform
 
+import numpy as np
+
 print(sys.version, sys.version_info)
 print(platform.python_implementation(), platform.python_version(), platform.python_compiler())
 
 
-def setup_custom_logger(name, logger):
+def setup_custom_logger(name):
     """Sets up custom logger."""
     formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
                                   datefmt='%Y-%m-%d %H:%M:%S')
@@ -109,7 +111,7 @@ def astar(maze, start, end, allow_diag=False):
                 continue
 
             # check for wall/impassable
-            if maze[node_position[0]][node_position[1]] == 1:
+            if maze[node_position[0]][node_position[1]] == 9: # question: not the correct np way to reference?
                 continue
 
             new_node = Node(current_node, node_position)
@@ -143,15 +145,15 @@ def astar(maze, start, end, allow_diag=False):
 
 
 def run_astar():
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    maze = [[0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     """
@@ -171,21 +173,25 @@ def run_astar():
     """
 
     maze2 = [[0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0],
-             [0, 1, 1, 0, 0, 0, 0],
-             [0, 1, 0, 0, 0, 0, 0],
-             [1, 1, 0, 0, 0, 0, 0],
-             [0, 1, 1, 0, 1, 1, 0],
-             [0, 0, 0, 0, 0, 1, 1],
-             [0, 0, 0, 1, 0, 0, 0],
-             [1, 0, 0, 1, 1, 1, 0],
-             [0, 0, 0, 0, 0, 0, 1]]
+             [0, 0, 9, 0, 0, 0, 0],
+             [0, 9, 9, 0, 0, 0, 0],
+             [0, 9, 0, 0, 0, 0, 0],
+             [9, 9, 0, 0, 0, 0, 0],
+             [0, 9, 9, 0, 9, 9, 0],
+             [0, 0, 0, 0, 0, 9, 9],
+             [0, 0, 0, 9, 0, 0, 0],
+             [9, 0, 0, 9, 9, 9, 0],
+             [0, 0, 0, 0, 0, 0, 9]]
 
     start = (0, 0)
-    end = (9, 2)
+    end = (7,6)
+
+    # saving as np.byte to get int8 (we don't need to represent that many levels yet), plus, we can always go up!
+    np_maze = np.array(maze2, dtype=np.byte) # keep the original maze since we need to re-draw over it
+    print(np_maze.dtype)
     print("start = ", start)
     print("end = ", end)
-    path = astar(maze2, start, end)
+    path = astar(np_maze, start, end)
     return [path, maze2]
 
 

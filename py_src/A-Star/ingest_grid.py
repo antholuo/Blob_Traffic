@@ -4,8 +4,8 @@ ingest_grid.py, written as part of Blob_Traffic project (https://github.com/anth
 January 2022
 Anthony Luo (antholuo@gmail.com), Christina Zhang (christinaytzhangroxs@gmail.com)
 ---------------------------------------
-    This file is designed to take a line-by-line entry (cin) or a text file (preferred) and parse it into a numpy array
-workable by the rest of our code.
+    This file is designed to take a line-by-line entry (cin) or a text file (preferred) and parse it into either a
+numpy array or a python list.
 Todo: The rest of our pathfinding code needs to be updated to accept numpy arrays.
 """
 
@@ -50,6 +50,28 @@ def yx_to_xy(yx_grid):
     return xy_grid
 
 
+def txt_to_np(filepath):
+    print("converting txt to np")
+    lines = []
+    with open(filepath) as file:
+        lines = file.readlines()
+
+    yx_grid = []
+
+    y = 0
+    x = 0
+    for line in lines:
+        yx_grid.append([])
+        line = line.rstrip()
+        line = line.replace(" ", "")
+        for char in line:
+            if char=="X" or char=="x" or char=="#":
+                yx_grid[y].append(9)
+            else:
+                yx_grid[y].append(char)
+        y += 1
+    return list_to_np(yx_to_xy(yx_grid))
+
 # simple visualization of the maze and the path A* takes
 def visualize(maze, path=[]):
     for coordinate in path:
@@ -67,6 +89,7 @@ def visualize(maze, path=[]):
             x += 1
         y += 1
 
+
 def _visualize_np(np_grid):
     """
     internal function to print out entire np_grid
@@ -76,6 +99,11 @@ def _visualize_np(np_grid):
     print("printing RAW numpy array. NOTE that this will be transformed with regard to our actual array.")
     with np.printoptions(threshold=np.inf):
         print(np_grid)
+
+
+def list_to_np(grid):
+    return np.array(grid, dtype=np.byte)
+
 
 def testfunc1():
     maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -94,9 +122,13 @@ def testfunc1():
     np_grid = list_to_np(xy_grid)
     _visualize_np(np_grid)
 
-def list_to_np(grid):
-    return np.array(grid)
+
+def testfunc2():
+    np_grid = txt_to_np("grid.txt")
+    with np.printoptions(threshold=np.inf):
+        print(np_grid)
+    print(np_grid.dtype)
 
 if __name__ == "__main__":
     print("running ingest_grid.py")
-    testfunc1()
+    testfunc2()

@@ -47,7 +47,7 @@ THE GRID
 Everything lives on the grid. It defines our world.
 
 Currently, we have elevation steps as integers from -5 to +5, with 0 being our reference or "ground" elevation.
-Walls or other impassable areas are defined using characters, currently denoted 'x'
+Walls or other impassable areas are defined using the value 9. They are represented with "x"s
 
 Now, I need to somehow generate a grid....let's start simple with only 0 and x...
 I've added row and column numbers for simplicity...
