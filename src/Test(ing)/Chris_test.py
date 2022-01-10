@@ -1,81 +1,66 @@
 import numpy as np
 from glumpy import app, gl, glm, gloo
-import sys
-import OpenGL.GLUT as glut
+from glumpy.geometry import colorcube
 
-def display():
-    glut.glutSwapBuffers()
-
-def reshape(width,height):
-    gl.glViewport(0, 0, width, height)
-
-def keyboard( key, x, y ):
-    if key == b'\x1b':
-        sys.exit( )
-
-glut.glutInit()
-glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA)
-glut.glutCreateWindow('Hello world!')
-glut.glutReshapeWindow(512,512)
-glut.glutReshapeFunc(reshape)
-glut.glutDisplayFunc(display)
-glut.glutKeyboardFunc(keyboard)
-glut.glutMainLoop()
-
-
-'''
-in opengl the coordinates go 
-
-(-1, +1)    (+1, +1)
-
-       (0 , 0)
-
-(-1, -1)    (+1, -1)
-
-important to know: barycentric interpolation !!
-
-'''
-
-
-data = np.zeros(4, dtype = [ ("position", np.float32, 3),
-                                ("color",    np.float32, 4)] )
-# the first 4 refers to the vertices, then there are 3 position values for x,y,z and 4 colour values for rgba
-# if working in 2d we dont need the x axis so the 3 can be changed into 2
-data = np.zeros(4, dtype = [ ("position", np.float32, 2),
-                                ("color",    np.float32, 4)] )
-
-# THIS IS THE VERTEX SHADER
 vertex = """
-
-// vec2 just means a tuple of 2 floats and vec4 means a tuple of 4 floats
-// vertex shader now expects a vertex to possess 2 attributes: position and colour
-
-uniform float scale;    // if we wanna scale all our vertexes by smth?
-attribute vec2 position; 
-attribute vec4 color;
-varying vec4 v_color;   // used to pass info between vertex stage and fragment stage
-
+uniform mat4   u_model;         // Model matrix
+uniform mat4   u_view;          // View matrix
+uniform mat4   u_projection;    // Projection matrix
+attribute vec3 a_position;      // Vertex position
 void main()
 {
-    gl_Position = vec4(position*scale, 0.0, 1.0);
-    v_color = color;    // we do this (plus the fragment code of gl_FragColor = v_colour to pass vertex color
-                        // to fragment shader
+    gl_Position = u_projection * u_view * u_model * vec4(a_position,1.0);
 }
-
 """
 
-# THIS IS THE FRAGMENT SHADER
 fragment = """
-
-varying vec4 v_color;
-
 void main()
 {
-    gl_FragColor = v_color;
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
-
 """
 
+window = app.Window(width=1024, height=1024,
+                    color=(0.30, 0.30, 0.35, 1.00))
 
-print(data)
+@window.event
+def on_draw(dt):
+    global phi, theta
+    window.clear()
 
+    # Filled cube
+    cube.draw(gl.GL_TRIANGLES, I)
+
+    # Make cube rotate
+    theta += 0.5 # degrees
+    phi += 0.5 # degrees
+    model = np.eye(4, dtype=np.float32)
+    glm.rotate(model, theta, 0, 0, 1)
+    glm.rotate(model, phi, 0, 1, 0)
+    cube['u_model'] = model
+
+
+@window.event
+def on_resize(width, height):
+    cube['u_projection'] = glm.perspective(45.0, width / float(height), 2.0, 100.0)
+
+@window.event
+def on_init():
+    gl.glEnable(gl.GL_DEPTH_TEST)
+
+
+V = np.zeros(8, [("a_position", np.float32, 3)])
+V["a_position"] = [[ 1, 1, 1], [-1, 1, 1], [-1,-1, 1], [ 1,-1, 1],
+                   [ 1,-1,-1], [ 1, 1,-1], [-1, 1,-1], [-1,-1,-1]]
+V = V.view(gloo.VertexBuffer)
+I = np.array([0,1,2, 0,2,3,  0,3,4, 0,4,5,  0,5,6, 0,6,1,
+              1,6,7, 1,7,2,  7,4,3, 7,3,2,  4,7,6, 4,6,5], dtype=np.uint32)
+I = I.view(gloo.IndexBuffer)
+
+cube = gloo.Program(vertex, fragment)
+cube.bind(V)
+cube['u_model'] = np.eye(4, dtype=np.float32)
+cube['u_view'] = glm.translation(0, 0, -5)
+phi, theta = 40, 30
+
+app.run()
