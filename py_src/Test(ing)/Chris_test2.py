@@ -39,14 +39,15 @@ fragment_wall = """
     """
 
 # Create a window with a valid GL context
-window = app.Window(width = 1000, height = 800)
+window = app.Window()
 
 # Tell glumpy what needs to be done at each redraw
 @window.event
 def on_resize(width, height):
    ratio = width / float(height)
-   quad['projection'] = glm.perspective(30.0, ratio, 2.0, 100.0)
-   wall['projection'] = glm.perspective(30.0, ratio, 2.0, 100.0)
+   quad['projection'] = glm.perspective(35.0, ratio, 2.0, 100.0)
+   wall['projection'] = glm.perspective(35.0, ratio, 2.0, 100.0)
+
 
 
 @window.event
@@ -87,7 +88,6 @@ wall.bind(V)
 wall['model'] = np.eye(4, dtype=np.float32)
 wall['view'] = glm.translation(0, 0, -5)
 
-# creating the ground or wtv
 quad = gloo.Program(vertex_land, fragment_land, count=4)
 
 quad['position'] = (-1,0,+1), (+1,0,+1), (-1,0,-1), (+1,0,-1)
