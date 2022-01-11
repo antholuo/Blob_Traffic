@@ -1,32 +1,32 @@
-import glfw
-
+import sys
 from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
 
-import numpy as np
+# The display() method does all the work; it has to call the appropriate
+# OpenGL functions to actually display something.
+def display():
+    # Clear the color and depth buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-glfw.init()
-# creating a window with 800 width and 600 height
-window = glfw.create_window(800,600, "PyOpenGL Init", None, None)
-glfw.set_window_pos(window,400,200)
-glfw.make_context_current(window)
+    # ... render stuff in here ...
+    # It will go to an off-screen frame buffer.
 
-vertices = [-0.5, -0.5, 0.0,
-0.5, -0.5,0.0,
-0.0, 0.5, 0.0]
-v = np.array(vertices,dtype=np.float32)
+    # Copy the off-screen buffer to the screen.
+    glutSwapBuffers()
 
+glutInit(sys.argv)
 
-glEnableClientState(GL_VERTEX_ARRAY)
-glVertexPointer(3, GL_FLOAT,0,v)
-# setting color for background
-glClearColor(0,0,0,0)
+# Create a double-buffer RGBA window.   (Single-buffering is possible.
+# So is creating an index-mode window.)
+glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
 
-while not glfw.window_should_close(window):
+# Create a window, setting its title
+glutCreateWindow('interactive')
 
-    glfw.poll_events()
-    glClear(GL_COLOR_BUFFER_BIT)
+# Set the display callback.  You can set other callbacks for keyboard and
+# mouse events.
+glutDisplayFunc(display)
 
-    glDrawArrays(GL_TRIANGLES,0,3)
-    glfw.swap_buffers(window)
-
-glfw.terminate()
+# Run the GLUT main loop until the user closes the window.
+glutMainLoop()
