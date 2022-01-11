@@ -65,7 +65,7 @@ def txt_to_np(filepath):
         line = line.rstrip()
         line = line.replace(" ", "")
         for char in line:
-            if char=="X" or char=="x" or char=="#":
+            if char=="X" or char=="x" or char=="#" or char=="9": #todo: add a way to match char with a list of known "walls"
                 yx_grid[y].append(9)
             else:
                 yx_grid[y].append(char)
