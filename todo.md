@@ -47,6 +47,11 @@ Blobs:
     - how to deal with senorsy stuff like...doors....revolvign doors...other blobs? blob traffic?
     - will there be different kinds of blobs? Flying blobs and ground blobs and tunneling blobs?
 
+## blob classes:
+- efficient blob (distance/cost first)
+- speedy blob (time first)
+- lazy blob (least walking?)
+
 Action Plan:
 ========================================================================================================================
 
