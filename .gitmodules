@@ -1,6 +1,3 @@
 [submodule "blob_sea"]
 	path = blob_sea
 	url = https://github.com/Chrisytz/blob_sea_src
-[submodule "Blob_Lib"]
-	path = Blob_Lib
-	url = https://github.com/Blob-Traffic/Blob_Lib.git
