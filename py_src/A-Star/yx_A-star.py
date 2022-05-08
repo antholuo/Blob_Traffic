@@ -134,7 +134,7 @@ def astar(maze, start, end, allow_diag=False):
         for child in children:
             # Child is on the closed list
             if child in closed_list:
-                print("child in closed list")
+                # print("child in closed list")
                 continue
 
             # Create the f, g, and h values
@@ -146,10 +146,10 @@ def astar(maze, start, end, allow_diag=False):
 
             # if child is already on the open list
             if child in open_list:
-                print("child in open list")
+                # print("child in open list")
                 idx = open_list.index(child)
                 if child.g < open_list[idx].g:
-                    print ("code reached")
+                    # print ("code reached")
                     # update the node in the open list
                     open_list[idx].g = child.g
                     open_list[idx].f = child.f
@@ -182,7 +182,7 @@ def run_astar():
     3 | 0 0 0 0 0 0 0 1 1 0
     4 | 0 0 1 0 0 1 0 0 0 0
     5 | 0 0 1 1 1 1 0 0 0 0
-    6 | 0 0 0 0 1 0 0 0 1 0
+    6 | 0 0 0 0 1 0 0 0 1 0, 
     """
 
     maze2 = [[0, 0, 0, 0, 0, 0, 0],
@@ -204,6 +204,7 @@ def run_astar():
 
 # simple visualization of the maze and the path A* takes
 def visualization(path, maze):
+    print(path);
     for coordinate in path:
         maze[coordinate[0]][coordinate[1]] = "#"
 
