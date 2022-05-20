@@ -51,7 +51,7 @@ def yx_to_xy(yx_grid):
 
 
 def txt_to_np(filepath):
-    print("converting txt to np")
+    # print("converting txt to np")
     lines = []
     with open(filepath) as file:
         lines = file.readlines()
@@ -70,7 +70,7 @@ def txt_to_np(filepath):
             else:
                 yx_grid[y].append(char)
         y += 1
-    return list_to_np(yx_to_xy(yx_grid))
+    return list_to_np(yx_grid)
 
 # simple visualization of the maze and the path A* takes
 def visualize(maze, path=[]):
@@ -127,8 +127,7 @@ def testfunc2():
     np_grid = txt_to_np("grid.txt")
     with np.printoptions(threshold=np.inf):
         print(np_grid)
-    print(np_grid.dtype)
+    # print(np_grid.dtype)
 
 if __name__ == "__main__":
-    print("running ingest_grid.py")
     testfunc2()
