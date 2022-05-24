@@ -87,6 +87,7 @@ def main():
         SCREEN.fill(BLACK)
         drawGrid()
         walls.render()
+        drawDest(DEST_X, DEST_Y)
         blob.update()
         blob.render()
         for event in pygame.event.get():
@@ -102,7 +103,6 @@ def drawGrid():
         for y in range(0, WINDOW_HEIGHT, BLOCKSIZE):
             rect = pygame.Rect(x, y, BLOCKSIZE, BLOCKSIZE)
             pygame.draw.rect(SCREEN, WHITE, rect, 1)
-    drawDest(DEST_X, DEST_Y)
 
 def drawDest(x, y):
     rect = pygame.Rect(x, y, BLOCKSIZE, BLOCKSIZE)
