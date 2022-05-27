@@ -19,7 +19,7 @@ class BlobEnvView:
     PINK = (207, 56, 124)
     BLOCKSIZE = 50
 
-    def __init__(self, grid_file_path=None, grid_size=(10,10), screen_size=(800,800), enable_render=True):
+    def __init__(self, grid_file_path=None, grid_size=(10,10), screen_size=(500,500), enable_render=True):
 
         # initialize pygame
         pygame.init()
@@ -36,7 +36,7 @@ class BlobEnvView:
         # blob and goal position
         self.grid = txt_to_np(grid_file_path)
         self.blob = np.zeros(2, dtype=int)
-        self.goal = np.array([9,7])
+        self.goal = np.array([8,9])
         self.grid[self.blob[1]][self.blob[0]] = 1
         self.grid[self.goal[1]][self.goal[0]] = 2
 
@@ -49,21 +49,24 @@ class BlobEnvView:
     def move_blob(self, action):
         new_loc = self.blob + np.array(self.COMPASS[action])
 
-
-        if self.grid[new_loc[1]][new_loc[0]] != 9 and new_loc[0] >= 0 and new_loc[1] >= 0 and new_loc[0] <= self.grid.shape[0] and new_loc[1] <= self.grid.shape[1]:
+        if new_loc[0] >= 0 and new_loc[1] >= 0 and new_loc[0] < 10 and new_loc[1] < 10 and self.grid[new_loc[1]][new_loc[0]] != 9:
             self.grid[self.blob[1]][self.blob[0]] = 0
             self.blob += np.array(self.COMPASS[action])
             self.grid[self.blob[1]][self.blob[0]] = 1
 
+        if self.enable_render is True:
+            self.render()
+
     def reset_blob(self):
         self.blob = np.zeros(2, dtype=int)
-        self.goal = np.array([9, 7])
+        self.goal = np.array([8, 9])
         self.grid[self.blob[1]][self.blob[0]] = 1
         self.grid[self.goal[1]][self.goal[0]] = 2
 
         if self.enable_render is True:
             self.screen = pygame.display.set_mode(self.screen_size)
             self.screen.fill(self.BLACK)
+            pygame.time.delay(1000)
             self.render()
 
 
@@ -103,6 +106,8 @@ class BlobEnvView:
 
                 y += 50
             x += 50
+
+        pygame.display.update()
 
 
 

@@ -18,9 +18,8 @@ class BlobEnv(gym.Env):
         self.viewer = None
         self.enable_render = enable_render
 
-        self.maze_view = BlobEnvView(grid_file_path="grid.txt", grid_size=(10,10), screen_size=(800,800), enable_render=True)
+        self.maze_view = BlobEnvView(grid_file_path="grid.txt", grid_size=(10,10), screen_size=(500,500), enable_render=True)
 
-        # OKAY I HAVE NO IDEA WHAT MAZE_SIZE SHOULD BE TT
         self.maze_size = self.maze_view.maze_size
 
         self.action_space = spaces.Discrete(2 * len(self.maze_size))
@@ -59,10 +58,11 @@ class BlobEnv(gym.Env):
 
         # check to see if blob has made it
         if np.array_equal(self.maze_view.blob, self.maze_view.goal):
-            self.reward = 1
+            self.reward += 1
+            self.maze_view.game_over = True
             done = True
         else:
-            self.reward = -0.1/(self.maze_size[0]*self.maze_size[1])
+            self.reward += -0.1/(self.maze_size[0]*self.maze_size[1])
             done = False
 
         self.state = self.maze_view.blob
@@ -76,6 +76,7 @@ class BlobEnv(gym.Env):
         self.state = np.zeros(2, dtype=int)
         self.steps_beyond_done = None
         self.done = False
+        self.reward = 0
         return self.state
 
     def is_game_over(self):
