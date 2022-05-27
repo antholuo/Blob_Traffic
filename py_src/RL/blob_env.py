@@ -1,163 +1,88 @@
-import gym
-from gym import spaces
+
 import numpy as np
-from ingest_grid import txt_to_np
-import pygame
-import sys
 
-BLACK = (50, 50, 50)
-WHITE = (200, 200, 200)
-BLUE = (52, 167, 201)
-PINK = (207, 56, 124)
-BLOCKSIZE = 50
-# in the future we find a way to generate these or smth
-DEST_X = 450
-DEST_Y = 350
-WINDOW_HEIGHT = BLOCKSIZE * 8
-WINDOW_WIDTH = BLOCKSIZE * 10
-
-SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-CLOCK = pygame.time.Clock()
-
-def drawGrid():
-    for x in range(0, WINDOW_WIDTH, BLOCKSIZE):
-        for y in range(0, WINDOW_HEIGHT, BLOCKSIZE):
-            rect = pygame.Rect(x, y, BLOCKSIZE, BLOCKSIZE)
-            pygame.draw.rect(SCREEN, WHITE, rect, 1)
-
-def drawDest(x, y):
-    rect = pygame.Rect(x, y, BLOCKSIZE, BLOCKSIZE)
-    pygame.draw.rect(SCREEN, PINK, rect)
-
-
-class Wall():
-    def __init__(self):
-        self.np_grid = txt_to_np("grid.txt")
-        print(self.np_grid)
-        self.wall_list = []
-
-        # okay so current im flipping it so it matches with the grid.txt file idk what we actually want tho
-        for i in range(len(self.np_grid)):
-            for j in range(len(self.np_grid[0])):
-                if self.np_grid[i][j] == 9:
-                    self.wall_list.append((j * BLOCKSIZE, i * BLOCKSIZE))
-
-    def render(self):
-        for block in self.wall_list:
-            rect = pygame.Rect(block[0], block[1], BLOCKSIZE, BLOCKSIZE)
-            pygame.draw.rect(SCREEN, WHITE, rect)
-
-class Dest():
-    def __init__(self, x_pos, y_pos):
-        self.x = x_pos
-        self.y = y_pos
-
-    def render(self):
-        rect = pygame.Rect(self.x, self.y, BLOCKSIZE, BLOCKSIZE)
-        pygame.draw.rect(SCREEN, PINK, rect)
-
-
-class Blob():
-    def __init__(self, x_pos, y_pos, wall_list):
-        self.x = x_pos
-        self.y = y_pos
-        self.prev_x = x_pos
-        self.prev_y = y_pos
-        self.wall_list = wall_list
-
-    def render(self):
-        rect = pygame.Rect(self.x, self.y, BLOCKSIZE, BLOCKSIZE)
-        pygame.draw.rect(SCREEN, BLUE, rect)
+import gym
+from gym import error, spaces, utils
+from gym.utils import seeding
+from blob_env_view import BlobEnvView
 
 class BlobEnv(gym.Env):
-    def __init__(self):
+    metadata = {
+        "render.modes": ["human", "rgb_array"],
+    }
 
-        self.do_render = True
+    ACTION = ["N", "E", "S", "W"]
 
-        self.action_space = spaces.Discrete(4)
+    def __init__(self, maze_file=None, maze_size=None, mode=None, enable_render=True):
 
-        self.maze_size = (10, 8)
+        self.viewer = None
+        self.enable_render = enable_render
 
+        self.maze_view = BlobEnvView(grid_file_path="grid.txt", grid_size=(10,10), screen_size=(800,800), enable_render=True)
+
+        # OKAY I HAVE NO IDEA WHAT MAZE_SIZE SHOULD BE TT
+        self.maze_size = self.maze_view.maze_size
+
+        self.action_space = spaces.Discrete(2 * len(self.maze_size))
+
+        # not quite sure what is going on here tbh
         low = np.zeros(len(self.maze_size), dtype=int)
-        high =  np.array(self.maze_size, dtype=int) - np.ones(len(self.maze_size), dtype=int)
-        self.observation_space = spaces.Box(low, high, dtype=np.int64)
+        high = np.array(self.maze_size, dtype=int) - np.ones(len(self.maze_size), dtype=int)
+        self.observation_space = spaces.Box(low, high, shape=(2,) ,dtype=np.int64)
 
-
-        # elements present inside the environment
-        self.walls= Wall()
-        self.blob = Blob(0, 0, self.walls.wall_list)
-        self.dest = Dest(DEST_X, DEST_Y)
-        self.elements = [self.blob, self.dest, self.walls.wall_list]
+        self.state = None
+        self.steps_beyond_done = None
 
         self.reward = 0
-        self.done = False
 
-        if self.do_render:
-            pygame.init()
-            SCREEN.fill(BLACK)
-            drawGrid()
-            self.walls.render()
-            self.dest.render()
-            self.blob.render()
+        # Simulation related variables.
+        self.seed()
+        self.reset()
+
+        # Just need to initialize the relevant attributes
+        self.configure()
+
+    def __del__(self):
+        if self.enable_render is True:
+            self.maze_view.quit_game()
+
+    def configure(self, display=None):
+        self.display = display
+
+    # no clue what this is for
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
 
     def step(self, action):
-        if action == 0:
-            self.blob.y -= 50
-        if action == 1:
-            self.blob.y += 50
-        if action == 2:
-            self.blob.x -= 50
-        if action == 3:
-            self.blob.x += 50
+        self.maze_view.move_blob(self.ACTION[action])
 
-        if (self.blob.x, self.blob.y) in self.walls.wall_list:
-            self.blob.x = self.blob.prev_x
-            self.blob.y = self.blob.prev_y
-        elif self.blob.x < 0 or self.blob.y < 0 or self.blob.x > WINDOW_WIDTH - 50 or self.blob.y > WINDOW_HEIGHT - 50:
-            self.blob.x = self.blob.prev_x
-            self.blob.y = self.blob.prev_y
-
-        self.blob.prev_y = self.blob.y
-        self.blob.prev_x = self.blob.x
-
-        if (self.blob.x, self.blob.y) == (self.dest.x, self.dest.y):
-            self.done = True
-
-        if self.do_render:
-            self.blob.render()
-            pygame.display.update()
-
-        if self.done == True:
-            self.reward += 50
+        # check to see if blob has made it
+        if np.array_equal(self.maze_view.blob, self.maze_view.goal):
+            self.reward = 1
+            done = True
         else:
-            self.reward -= 1
+            self.reward = -0.1/(self.maze_size[0]*self.maze_size[1])
+            done = False
 
-
-        blob_x = self.blob.x
-        blob_y = self.blob.y
-        wall_list = self.walls.wall_list
-        dest_x = self.dest.x
-        dest_y = self.dest.y
-
-        self.observation = [blob_x, blob_y, dest_x, dest_y] + wall_list
+        self.state = self.maze_view.blob
 
         info = {}
-        return self.observation, self.reward, self.done, info
+
+        return self.state, self.reward, done, info
 
     def reset(self):
+        self.maze_view.reset_blob()
+        self.state = np.zeros(2, dtype=int)
+        self.steps_beyond_done = None
         self.done = False
-        self.blob.x = 0
-        self.blob.y = 0
-        self.reward = 0
+        return self.state
 
-        blob_x = self.blob.x
-        blob_y = self.blob.y
-        wall_list = self.walls.wall_list
-        dest_x = self.dest.x
-        dest_y = self.dest.y
+    def is_game_over(self):
+        return self.maze_view.game_over
 
-        self.observation = [blob_x, blob_y, wall_list, dest_x, dest_y]
+    def render(self, mode="human", close=False):
+        if close:
+            self.maze_view.quit_game()
 
-        return self.observation
-
-
+        return self.maze_view.update(mode)
