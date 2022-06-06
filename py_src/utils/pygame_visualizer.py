@@ -37,7 +37,7 @@ class Visualizer:
         self.block_size = block_size
         self.enable_render = enable_render
 
-        # import the grid from a text file
+        # import the grid from an np array
         self.grid = grid
 
         # set grid_size and screen_size
