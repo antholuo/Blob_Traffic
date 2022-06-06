@@ -12,10 +12,10 @@ Todo: The rest of our pathfinding code needs to be updated to accept numpy array
 import numpy as np
 
 # list of characters that are recognized as "walls" when we ingest from .txt files
-WALL_CHARACTERS = ["X", "x", "#", "9"]
-BLOB_START = "@"
-BLOB_GOAL = "$"
-
+WALL_CHARACTERS = ["X", "x", "#", "9"] # these will correlate with 9
+BLOB_START = "@" # this will correlate with 1
+BLOB_GOAL = "$"  # this will correlate with 2
+# empty space will corelate with 0
 
 def yx_to_xy(yx_grid):
     """Turns a y/x grid (row, column) into an x/y grid.
