@@ -22,7 +22,7 @@ class Visualizer:
         "NE": np.array([1, -1]),
         "NW": np.array([-1, -1]),
         "SE": np.array([1, 1]),
-        "SW": np.array([-1, 1])
+        "SW": np.array([-1, 1]),
     }
 
     # colours of the paths, walls, blob and goal
@@ -42,7 +42,10 @@ class Visualizer:
 
         # set grid_size and screen_size
         self.grid_size = self.grid.shape
-        self.screen_size = (block_size * self.grid_size[0], block_size * self.grid_size[1])
+        self.screen_size = (
+            block_size * self.grid_size[0],
+            block_size * self.grid_size[1],
+        )
 
         # get the blob and goal locations from the grid
         # recall that blob is where there is a 1
@@ -60,7 +63,8 @@ class Visualizer:
     def is_valid_loaction(self, location):
         # check if the location is in the grid
         if (location[0] >= 0 and location[0] < self.grid_size[0]) and (
-                location[1] >= 0 and location[1] < self.grid_size[1]):
+            location[1] >= 0 and location[1] < self.grid_size[1]
+        ):
             # check if the location is not a wall
             if self.grid[location[0]][location[1]] != 9:
                 return True
@@ -111,17 +115,49 @@ class Visualizer:
         for i in range(self.grid_size[0]):
             for j in range(self.grid_size[1]):
                 if self.grid[i][j] == 0:
-                    pygame.draw.rect(self.screen, self.BLACK, [j * self.block_size, i * self.block_size,
-                                                               self.block_size, self.block_size])
+                    pygame.draw.rect(
+                        self.screen,
+                        self.BLACK,
+                        [
+                            j * self.block_size,
+                            i * self.block_size,
+                            self.block_size,
+                            self.block_size,
+                        ],
+                    )
                 elif self.grid[i][j] == 1:
-                    pygame.draw.rect(self.screen, self.BLUE, [j * self.block_size, i * self.block_size,
-                                                              self.block_size, self.block_size])
+                    pygame.draw.rect(
+                        self.screen,
+                        self.BLUE,
+                        [
+                            j * self.block_size,
+                            i * self.block_size,
+                            self.block_size,
+                            self.block_size,
+                        ],
+                    )
                 elif self.grid[i][j] == 2:
-                    pygame.draw.rect(self.screen, self.PINK, [j * self.block_size, i * self.block_size,
-                                                              self.block_size, self.block_size])
+                    pygame.draw.rect(
+                        self.screen,
+                        self.PINK,
+                        [
+                            j * self.block_size,
+                            i * self.block_size,
+                            self.block_size,
+                            self.block_size,
+                        ],
+                    )
                 elif self.grid[i][j] == 9:
-                    pygame.draw.rect(self.screen, self.WHITE, [j * self.block_size, i * self.block_size,
-                                                               self.block_size, self.block_size])
+                    pygame.draw.rect(
+                        self.screen,
+                        self.WHITE,
+                        [
+                            j * self.block_size,
+                            i * self.block_size,
+                            self.block_size,
+                            self.block_size,
+                        ],
+                    )
 
         # update the screen
         pygame.display.update()

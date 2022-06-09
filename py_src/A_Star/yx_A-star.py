@@ -16,20 +16,27 @@ import time
 import platform
 
 print(sys.version, sys.version_info)
-print(platform.python_implementation(), platform.python_version(), platform.python_compiler())
+print(
+    platform.python_implementation(),
+    platform.python_version(),
+    platform.python_compiler(),
+)
+
 
 def setup_custom_logger(name):
-    formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
-                                  datefmt='%Y-%m-%d %H:%M:%S')
-    handler = logging.FileHandler('log.txt', mode='w')
+    formatter = logging.Formatter(
+        fmt="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+    )
+    handler = logging.FileHandler("log.txt", mode="w")
     handler.setFormatter(formatter)
-    #screen_handler = logging.StreamHandler(stream=sys.stdout)
-    #screen_handler.setFormatter(formatter)
+    # screen_handler = logging.StreamHandler(stream=sys.stdout)
+    # screen_handler.setFormatter(formatter)
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     logger.addHandler(handler)
-    #logger.addHandler(screen_handler)
+    # logger.addHandler(screen_handler)
     return logger
+
 
 logger = setup_custom_logger("a-star")
 
@@ -50,7 +57,9 @@ class Node:
         :param other:
         :return:
         """
-        return self.position == other.position # a lot simpler than going through the list in a convoluted way
+        return (
+            self.position == other.position
+        )  # a lot simpler than going through the list in a convoluted way
 
 
 def return_path(current_node):
@@ -59,8 +68,9 @@ def return_path(current_node):
     while current is not None:
         logger.info("backtrace path is: " + str(current.position))
         path.append(current.position)
-        current=current.parent
-    return path[::-1] # returns traversed path
+        current = current.parent
+    return path[::-1]  # returns traversed path
+
 
 def astar(maze, start, end, allow_diag=False):
     """
@@ -71,7 +81,6 @@ def astar(maze, start, end, allow_diag=False):
     :param allow_diag: 0 = no diag, 1 = diag.
     :return: list from given start to given end
     """
-
 
     start_node = Node(None, start)
     end_node = Node(None, end)
@@ -85,13 +94,22 @@ def astar(maze, start, end, allow_diag=False):
     if not allow_diag:
         adjacent_squares = ((0, -1), (0, 1), (-1, 0), (1, 0))
     else:
-        adjacent_squares = ((0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1))
+        adjacent_squares = (
+            (0, -1),
+            (0, 1),
+            (-1, 0),
+            (1, 0),
+            (-1, -1),
+            (-1, 1),
+            (1, -1),
+            (1, 1),
+        )
 
     logger.debug(msg="starting while loop")
     while len(open_list) > 0:
 
         # do we need to set this if we are prioq later?
-        current_node = open_list[0] # get the first node in the open list.
+        current_node = open_list[0]  # get the first node in the open list.
         current_index = 0
 
         logger.info("currently on position:" + str(current_node.position))
@@ -116,10 +134,18 @@ def astar(maze, start, end, allow_diag=False):
         for next_position in adjacent_squares:
 
             # node position is the position of the current node plus which ever direction we are going in
-            node_position = (current_node.position[0] + next_position[0], current_node.position[1] + next_position[1])
+            node_position = (
+                current_node.position[0] + next_position[0],
+                current_node.position[1] + next_position[1],
+            )
 
             # checks to see if position is inside grid
-            if node_position[0] < 0 or node_position[0] > (len(maze[0]) - 1) or node_position[1] < 0 or node_position[1] > (len(maze) - 1):
+            if (
+                node_position[0] < 0
+                or node_position[0] > (len(maze[0]) - 1)
+                or node_position[1] < 0
+                or node_position[1] > (len(maze) - 1)
+            ):
                 continue
 
             # checks to see if position is a wall/impassable
@@ -130,7 +156,6 @@ def astar(maze, start, end, allow_diag=False):
 
             children.append(new_node)
 
-
         for child in children:
             # Child is on the closed list
             if child in closed_list:
@@ -138,10 +163,18 @@ def astar(maze, start, end, allow_diag=False):
                 continue
 
             # Create the f, g, and h values
-            child.g = current_node.g + (((child.position[0] - child.parent.position[0]) ** 2) + (
-                        (child.position[1] - child.parent.position[1]) ** 2)) ** 0.5
-            child.h = (((child.position[0] - end_node.position[0]) ** 2) + (
-                        (child.position[1] - end_node.position[1]) ** 2)) ** 0.5
+            child.g = (
+                current_node.g
+                + (
+                    ((child.position[0] - child.parent.position[0]) ** 2)
+                    + ((child.position[1] - child.parent.position[1]) ** 2)
+                )
+                ** 0.5
+            )
+            child.h = (
+                ((child.position[0] - end_node.position[0]) ** 2)
+                + ((child.position[1] - end_node.position[1]) ** 2)
+            ) ** 0.5
             child.f = child.g + child.h
 
             # if child is already on the open list
@@ -159,18 +192,20 @@ def astar(maze, start, end, allow_diag=False):
                 # push child to open_list
                 open_list.append(child)
 
-def run_astar():
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
+def run_astar():
+    maze = [
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
 
     """
     Here we define MAZE #2, which is going to be written in x,y (column, row) format, but should look as such:
@@ -185,33 +220,37 @@ def run_astar():
     6 | 0 0 0 0 1 0 0 0 1 0, 
     """
 
-    maze2 = [[0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 1, 1, 0],
-             [0, 0, 0, 0, 0, 1, 0],
-             [0, 0, 0, 0, 0, 1, 1],
-             [0, 1, 1, 0, 1, 1, 0],
-             [1, 1, 0, 0, 0, 0, 0],
-             [0, 0, 0, 1, 0, 0, 0],
-             [0, 1, 1, 1, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0]]
+    maze2 = [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 1, 1],
+        [0, 1, 1, 0, 1, 1, 0],
+        [1, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0],
+    ]
 
     start = (0, 0)
-    end = (0,7)
+    end = (0, 7)
 
     path = astar(maze, start, end)
     return [path, maze]
 
+
 # simple visualization of the maze and the path A* takes
 def visualization(path, maze):
-    print(path);
+    print(path)
     for coordinate in path:
         maze[coordinate[0]][coordinate[1]] = "#"
 
     for i in range(len(maze)):
         for j in maze[i]:
-            print (j, end = " ")
+            print(j, end=" ")
         print("")
+
 
 if __name__ == "__main__":
     print("entering main function for A-Star main")

@@ -13,14 +13,19 @@ import platform
 import numpy as np
 
 print(sys.version, sys.version_info)
-print(platform.python_implementation(), platform.python_version(), platform.python_compiler())
+print(
+    platform.python_implementation(),
+    platform.python_version(),
+    platform.python_compiler(),
+)
 
 
 def setup_custom_logger(name):
     """Sets up custom logger."""
-    formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
-                                  datefmt='%Y-%m-%d %H:%M:%S')
-    handler = logging.FileHandler('log.txt', mode='w')
+    formatter = logging.Formatter(
+        fmt="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+    )
+    handler = logging.FileHandler("log.txt", mode="w")
     handler.setFormatter(formatter)
     # screen_handler = logging.StreamHandler(stream=sys.stdout)
     # screen_handler.setFormatter(formatter)
@@ -75,7 +80,16 @@ def astar(maze, start, end, allow_diag=False):
     if not allow_diag:
         adjacent_squares = ((0, -1), (0, 1), (-1, 0), (1, 0))
     else:
-        adjacent_squares = ((0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1))
+        adjacent_squares = (
+            (0, -1),
+            (0, 1),
+            (-1, 0),
+            (1, 0),
+            (-1, -1),
+            (-1, 1),
+            (1, -1),
+            (1, 1),
+        )
 
     logger.debug(msg="starting while loop")
 
@@ -103,15 +117,24 @@ def astar(maze, start, end, allow_diag=False):
         children = []
 
         for next_position in adjacent_squares:
-            node_position = (current_node.position[0] + next_position[0], current_node.position[1] + next_position[1])
+            node_position = (
+                current_node.position[0] + next_position[0],
+                current_node.position[1] + next_position[1],
+            )
 
             # this is different because of flipped x and y
-            if node_position[0] < 0 or node_position[0] > (len(maze) - 1) or \
-                    node_position[1] < 0 or node_position[1] > (len(maze[0]) - 1):
+            if (
+                node_position[0] < 0
+                or node_position[0] > (len(maze) - 1)
+                or node_position[1] < 0
+                or node_position[1] > (len(maze[0]) - 1)
+            ):
                 continue
 
             # check for wall/impassable
-            if maze[node_position[0]][node_position[1]] == 9: # question: not the correct np way to reference?
+            if (
+                maze[node_position[0]][node_position[1]] == 9
+            ):  # question: not the correct np way to reference?
                 continue
 
             new_node = Node(current_node, node_position)
@@ -120,14 +143,31 @@ def astar(maze, start, end, allow_diag=False):
 
             for child in children:
                 # Child is on the closed list
-                if len([closed_child for closed_child in closed_list if closed_child == child]) > 0:
+                if (
+                    len(
+                        [
+                            closed_child
+                            for closed_child in closed_list
+                            if closed_child == child
+                        ]
+                    )
+                    > 0
+                ):
                     continue
 
                 # Create the f, g, and h values
-                child.g = current_node.g + (((child.position[0] - child.parent.position[0]) ** 2) + (
-                        (child.position[1] - child.parent.position[1]) ** 2)) ** 0.5
-                child.h = (((child.position[0] - end_node.position[0]) ** 2) + (
-                        (child.position[1] - end_node.position[1]) ** 2)) ** 0.5
+                child.g = (
+                    current_node.g
+                    + (
+                        ((child.position[0] - child.parent.position[0]) ** 2)
+                        + ((child.position[1] - child.parent.position[1]) ** 2)
+                    )
+                    ** 0.5
+                )
+                child.h = (
+                    ((child.position[0] - end_node.position[0]) ** 2)
+                    + ((child.position[1] - end_node.position[1]) ** 2)
+                ) ** 0.5
                 child.f = child.g + child.h
 
                 # if child is already on the open list
@@ -145,16 +185,18 @@ def astar(maze, start, end, allow_diag=False):
 
 
 def run_astar():
-    maze = [[0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    maze = [
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 9, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
 
     """
     Here we define MAZE #2, which is going to be written in x,y (column, row) format, but should look as such:
@@ -172,22 +214,26 @@ def run_astar():
         0 1 2 3 4 5 6 7 8 9
     """
 
-    maze2 = [[0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 9, 0, 0, 0, 0],
-             [0, 9, 9, 0, 0, 0, 0],
-             [0, 9, 0, 0, 0, 0, 0],
-             [9, 9, 0, 0, 0, 0, 0],
-             [0, 9, 9, 0, 9, 9, 0],
-             [0, 0, 0, 0, 0, 9, 9],
-             [0, 0, 0, 9, 0, 0, 0],
-             [9, 0, 0, 9, 9, 9, 0],
-             [0, 0, 0, 0, 0, 0, 9]]
+    maze2 = [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 9, 0, 0, 0, 0],
+        [0, 9, 9, 0, 0, 0, 0],
+        [0, 9, 0, 0, 0, 0, 0],
+        [9, 9, 0, 0, 0, 0, 0],
+        [0, 9, 9, 0, 9, 9, 0],
+        [0, 0, 0, 0, 0, 9, 9],
+        [0, 0, 0, 9, 0, 0, 0],
+        [9, 0, 0, 9, 9, 9, 0],
+        [0, 0, 0, 0, 0, 0, 9],
+    ]
 
     start = (0, 0)
-    end = (7,6)
+    end = (7, 6)
 
     # saving as np.byte to get int8 (we don't need to represent that many levels yet), plus, we can always go up!
-    np_maze = np.array(maze2, dtype=np.byte) # keep the original maze since we need to re-draw over it
+    np_maze = np.array(
+        maze2, dtype=np.byte
+    )  # keep the original maze since we need to re-draw over it
     print(np_maze.dtype)
     print("start = ", start)
     print("end = ", end)

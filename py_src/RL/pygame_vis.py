@@ -3,9 +3,9 @@ import sys
 import numpy as np
 from ingest_grid import txt_to_np
 
-'''
+"""
 
-'''
+"""
 BLACK = (50, 50, 50)
 WHITE = (200, 200, 200)
 BLUE = (52, 167, 201)
@@ -17,7 +17,8 @@ DEST_Y = 350
 WINDOW_HEIGHT = BLOCKSIZE * 8
 WINDOW_WIDTH = BLOCKSIZE * 10
 
-class Wall():
+
+class Wall:
     def __init__(self):
         self.np_grid = txt_to_np("grid.txt")
         print(self.np_grid)
@@ -35,7 +36,7 @@ class Wall():
             pygame.draw.rect(SCREEN, WHITE, rect)
 
 
-class Blob():
+class Blob:
     def __init__(self, x_pos, y_pos, wall_list):
         self.x = x_pos
         self.y = y_pos
@@ -69,9 +70,15 @@ class Blob():
     def check_valid(self):
         if (self.x, self.y) in self.wall_list:
             return False
-        if self.x < 0 or self.y < 0 or self.x > WINDOW_WIDTH - 50 or self.y > WINDOW_HEIGHT - 50:
+        if (
+            self.x < 0
+            or self.y < 0
+            or self.x > WINDOW_WIDTH - 50
+            or self.y > WINDOW_HEIGHT - 50
+        ):
             return False
         return True
+
 
 def main():
     global SCREEN, CLOCK
@@ -103,6 +110,7 @@ def drawGrid():
         for y in range(0, WINDOW_HEIGHT, BLOCKSIZE):
             rect = pygame.Rect(x, y, BLOCKSIZE, BLOCKSIZE)
             pygame.draw.rect(SCREEN, WHITE, rect, 1)
+
 
 def drawDest(x, y):
     rect = pygame.Rect(x, y, BLOCKSIZE, BLOCKSIZE)

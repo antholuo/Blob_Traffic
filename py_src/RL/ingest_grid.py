@@ -65,12 +65,15 @@ def txt_to_np(filepath):
         line = line.rstrip()
         line = line.replace(" ", "")
         for char in line:
-            if char=="X" or char=="x" or char=="#" or char=="9": #todo: add a way to match char with a list of known "walls"
+            if (
+                char == "X" or char == "x" or char == "#" or char == "9"
+            ):  # todo: add a way to match char with a list of known "walls"
                 yx_grid[y].append(9)
             else:
                 yx_grid[y].append(char)
         y += 1
     return list_to_np(yx_grid)
+
 
 # simple visualization of the maze and the path A* takes
 def visualize(maze, path=[]):
@@ -96,7 +99,9 @@ def _visualize_np(np_grid):
     :param np_grid:
     :return:
     """
-    print("printing RAW numpy array. NOTE that this will be transformed with regard to our actual array.")
+    print(
+        "printing RAW numpy array. NOTE that this will be transformed with regard to our actual array."
+    )
     with np.printoptions(threshold=np.inf):
         print(np_grid)
 
@@ -106,16 +111,18 @@ def list_to_np(grid):
 
 
 def testfunc1():
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    maze = [
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
     xy_grid = yx_to_xy(maze)
     visualize(xy_grid)
     print()
@@ -128,6 +135,7 @@ def testfunc2():
     with np.printoptions(threshold=np.inf):
         print(np_grid)
     # print(np_grid.dtype)
+
 
 if __name__ == "__main__":
     testfunc2()

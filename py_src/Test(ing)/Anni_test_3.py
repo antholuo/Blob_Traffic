@@ -39,10 +39,15 @@ def rotate(M, angle, x, y, z, point=None):
     n = math.sqrt(x * x + y * y + z * z)
     x, y, z = x / n, y / n, z / n
     cx, cy, cz = (1 - c) * x, (1 - c) * y, (1 - c) * z
-    R = np.array([[cx * x + c, cy * x - z * s, cz * x + y * s, 0],
-                  [cx * y + z * s, cy * y + c, cz * y - x * s, 0],
-                  [cx * z - y * s, cy * z + x * s, cz * z + c, 0],
-                  [0, 0, 0, 1]], dtype=M.dtype).T
+    R = np.array(
+        [
+            [cx * x + c, cy * x - z * s, cz * x + y * s, 0],
+            [cx * y + z * s, cy * y + c, cz * y - x * s, 0],
+            [cx * z - y * s, cy * z + x * s, cz * z + c, 0],
+            [0, 0, 0, 1],
+        ],
+        dtype=M.dtype,
+    ).T
     M[...] = np.dot(M, R)
     return M
 
@@ -50,10 +55,15 @@ def rotate(M, angle, x, y, z, point=None):
 def translate(M, x, y=None, z=None):
     y = x if y is None else y
     z = x if z is None else z
-    T = np.array([[1.0, 0.0, 0.0, x],
-                  [0.0, 1.0, 0.0, y],
-                  [0.0, 0.0, 1.0, z],
-                  [0.0, 0.0, 0.0, 1.0]], dtype=M.dtype).T
+    T = np.array(
+        [
+            [1.0, 0.0, 0.0, x],
+            [0.0, 1.0, 0.0, y],
+            [0.0, 0.0, 1.0, z],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+        dtype=M.dtype,
+    ).T
     M[...] = np.dot(M, T)
     return M
 
@@ -94,7 +104,7 @@ def display():
     gl.glDisable(gl.GL_POLYGON_OFFSET_FILL)
     gl.glEnable(gl.GL_BLEND)
     gl.glDepthMask(gl.GL_FALSE)
-    gl.glUniform4f(gpu["uniform"]["u_color"], 0, 0, 0, .5)
+    gl.glUniform4f(gpu["uniform"]["u_color"], 0, 0, 0, 0.5)
     gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, gpu["buffer"]["outline"])
     gl.glDrawElements(gl.GL_LINES, len(o_indices), gl.GL_UNSIGNED_INT, None)
 
@@ -115,7 +125,8 @@ def reshape(width, height):
 
 
 def keyboard(key, x, y):
-    if key == b'\033':  sys.exit()
+    if key == b"\033":
+        sys.exit()
 
 
 def timer(fps):
@@ -127,7 +138,7 @@ def timer(fps):
 # --------------------------------------
 glut.glutInit()
 glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA | glut.GLUT_DEPTH)
-glut.glutCreateWindow('Hello world!')
+glut.glutCreateWindow("Hello world!")
 glut.glutReshapeWindow(512, 512)
 glut.glutReshapeFunc(reshape)
 glut.glutDisplayFunc(display)
@@ -136,16 +147,72 @@ glut.glutTimerFunc(1000 // 60, timer, 60)
 
 # Build cube
 # --------------------------------------
-vertices = np.zeros(8, [("a_position", np.float32, 3),
-                        ("a_color", np.float32, 4)])
-vertices["a_position"] = [[1, 1, 1], [-1, 1, 1], [-1, -1, 1], [1, -1, 1],
-                          [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, -1]]
-vertices["a_color"] = [[0, 1, 1, 1], [0, 0, 1, 1], [0, 0, 0, 1], [0, 1, 0, 1],
-                       [1, 1, 0, 1], [1, 1, 1, 1], [1, 0, 1, 1], [1, 0, 0, 1]]
-f_indices = np.array([0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 1,
-                      1, 6, 7, 1, 7, 2, 7, 4, 3, 7, 3, 2, 4, 7, 6, 4, 6, 5], dtype=np.uint32)
-o_indices = np.array([0, 1, 1, 2, 2, 3, 3, 0, 4, 7, 7, 6,
-                      6, 5, 5, 4, 0, 5, 1, 6, 2, 7, 3, 4], dtype=np.uint32)
+vertices = np.zeros(8, [("a_position", np.float32, 3), ("a_color", np.float32, 4)])
+vertices["a_position"] = [
+    [1, 1, 1],
+    [-1, 1, 1],
+    [-1, -1, 1],
+    [1, -1, 1],
+    [1, -1, -1],
+    [1, 1, -1],
+    [-1, 1, -1],
+    [-1, -1, -1],
+]
+vertices["a_color"] = [
+    [0, 1, 1, 1],
+    [0, 0, 1, 1],
+    [0, 0, 0, 1],
+    [0, 1, 0, 1],
+    [1, 1, 0, 1],
+    [1, 1, 1, 1],
+    [1, 0, 1, 1],
+    [1, 0, 0, 1],
+]
+f_indices = np.array(
+    [
+        0,
+        1,
+        2,
+        0,
+        2,
+        3,
+        0,
+        3,
+        4,
+        0,
+        4,
+        5,
+        0,
+        5,
+        6,
+        0,
+        6,
+        1,
+        1,
+        6,
+        7,
+        1,
+        7,
+        2,
+        7,
+        4,
+        3,
+        7,
+        3,
+        2,
+        4,
+        7,
+        6,
+        4,
+        6,
+        5,
+    ],
+    dtype=np.uint32,
+)
+o_indices = np.array(
+    [0, 1, 1, 2, 2, 3, 3, 0, 4, 7, 7, 6, 6, 5, 5, 4, 0, 5, 1, 6, 2, 7, 3, 4],
+    dtype=np.uint32,
+)
 
 # Build & activate program
 # --------------------------------------
@@ -184,11 +251,15 @@ gl.glVertexAttribPointer(loc, 4, gl.GL_FLOAT, False, stride, offset)
 
 gpu["buffer"]["filled"] = gl.glGenBuffers(1)
 gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, gpu["buffer"]["filled"])
-gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, f_indices.nbytes, f_indices, gl.GL_STATIC_DRAW)
+gl.glBufferData(
+    gl.GL_ELEMENT_ARRAY_BUFFER, f_indices.nbytes, f_indices, gl.GL_STATIC_DRAW
+)
 
 gpu["buffer"]["outline"] = gl.glGenBuffers(1)
 gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, gpu["buffer"]["outline"])
-gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, o_indices.nbytes, o_indices, gl.GL_STATIC_DRAW)
+gl.glBufferData(
+    gl.GL_ELEMENT_ARRAY_BUFFER, o_indices.nbytes, o_indices, gl.GL_STATIC_DRAW
+)
 
 # Bind uniforms
 # --------------------------------------

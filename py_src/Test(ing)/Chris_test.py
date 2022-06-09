@@ -48,18 +48,43 @@ glfw.set_window_pos(window, 400, 200)
 glfw.make_context_current(window)
 
 # okay so the vertices position and the colour values are all here
-    # - the first three values in each row are the position of the vertices
-    # - the second three values in each row are the colour of that vertex
-    # - each value is 4 bits!
-vertices = [-0.5, -0.5, 0.0, 1.0, 0.0, 0.0,
-             0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
-            -0.5,  0.5, 0.0, 0.0, 0.0, 1.0,
-             0.5,  0.5, 0.0, 1.0, 1.0, 1.0]
+# - the first three values in each row are the position of the vertices
+# - the second three values in each row are the colour of that vertex
+# - each value is 4 bits!
+vertices = [
+    -0.5,
+    -0.5,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.5,
+    -0.5,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    -0.5,
+    0.5,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.5,
+    0.5,
+    0.0,
+    1.0,
+    1.0,
+    1.0,
+]
 
 vertices = np.array(vertices, dtype=np.float32)
 
 # creating the shader program
-shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
+shader = compileProgram(
+    compileShader(vertex_src, GL_VERTEX_SHADER),
+    compileShader(fragment_src, GL_FRAGMENT_SHADER),
+)
 
 # create buffer, bind buffer and send data to buffer
 VBO = glGenBuffers(1)
@@ -69,15 +94,15 @@ glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
 # this is for position (location = 0)
 glEnableVertexAttribArray(0)
 # so here the 24 dictates how many bits it jumps from one reading of the position to the next
-    # - in this case it is 24 bc theres 6 values per row, so 6*4 = 24 and each of the position values are the first three vals of each row
-    # - the ctypes = 0 specifies which index of each row (every 24 bits) it starts on, it is zero bc first three are position
-    # - the one above is offset!!!!!!!!!
+# - in this case it is 24 bc theres 6 values per row, so 6*4 = 24 and each of the position values are the first three vals of each row
+# - the ctypes = 0 specifies which index of each row (every 24 bits) it starts on, it is zero bc first three are position
+# - the one above is offset!!!!!!!!!
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
 
 # this is for colour (location = 1)
 glEnableVertexAttribArray(1)
 # the same thing goes here but the ctypes = 12 means it starts reading from the 4th value in each row (12/4 = 3, next one is 4)
-glVertexAttribPointer(1 , 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
 
 glUseProgram(shader)
 glClearColor(0, 0.1, 0.1, 1)

@@ -1,9 +1,9 @@
-'''
+"""
 blob_env
 
 this file sets up the environment in which the agent will be trained
 calls blob_env_view for the actual movement of the blob and visualization
-'''
+"""
 
 # imports
 import numpy as np
@@ -33,7 +33,9 @@ class BlobEnv(gym.Env):
         self.enable_render = enable_render
 
         # set up the visualization
-        self.grid_view = BlobEnvView(grid_file_path=grid_file, block_size=block_size, enable_render=enable_render)
+        self.grid_view = BlobEnvView(
+            grid_file_path=grid_file, block_size=block_size, enable_render=enable_render
+        )
 
         # grid_size is a tuple: (x, y)
         self.grid_size = self.grid_view.grid_size
@@ -45,11 +47,13 @@ class BlobEnv(gym.Env):
         # low is top left corner
         low = np.zeros(len(self.grid_size), dtype=int)
         # high is bottom right corner
-        high = np.array(self.grid_size, dtype=int) - np.ones(len(self.grid_size), dtype=int)
+        high = np.array(self.grid_size, dtype=int) - np.ones(
+            len(self.grid_size), dtype=int
+        )
 
         # the shape of observation_space must match self.state, since what is what is being returned by step and reset
         # for us it has shape of 2 since all we are storing in the state rn is blob location
-        self.observation_space = spaces.Box(low, high, shape=(2,) ,dtype=np.int64)
+        self.observation_space = spaces.Box(low, high, shape=(2,), dtype=np.int64)
 
         # initialize state and reward
         self.state = None
@@ -76,7 +80,7 @@ class BlobEnv(gym.Env):
             self.grid_view.game_over = True
             done = True
         else:
-            self.reward += -0.1/(self.grid_size[0]*self.grid_size[1])
+            self.reward += -0.1 / (self.grid_size[0] * self.grid_size[1])
             done = False
 
         # set the state to the blob location

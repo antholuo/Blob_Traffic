@@ -1,8 +1,8 @@
-'''
+"""
 blob_env_view
 
 this file controls and updates the movement of the blob as well as visualizing the grid if needed
-'''
+"""
 
 import pygame
 import random
@@ -15,12 +15,7 @@ from ingest_grid import txt_to_np
 class BlobEnvView:
 
     # possible directions for the blob to travel
-    COMPASS = {
-        "N": (0, 1),
-        "S": (0, -1),
-        "E": (1, 0),
-        "W": (-1, 0)
-    }
+    COMPASS = {"N": (0, 1), "S": (0, -1), "E": (1, 0), "W": (-1, 0)}
 
     # colours of the paths, walls, blob and goal
     BLACK = (50, 50, 50)
@@ -42,7 +37,10 @@ class BlobEnvView:
 
         # set grid_size and screen_size
         self.grid_size = self.grid.shape
-        self.screen_size = (block_size*self.grid_size[0], block_size*self.grid_size[1])
+        self.screen_size = (
+            block_size * self.grid_size[0],
+            block_size * self.grid_size[1],
+        )
 
         # place the blob at the top left corner and the goal at the bottom right corner
         # we can change this to be decided by the user or text file or wtv in the future
@@ -50,8 +48,6 @@ class BlobEnvView:
         self.goal = self.grid_size - np.ones(2, dtype=int)
         self.grid[self.blob[1]][self.blob[0]] = 1
         self.grid[self.goal[1]][self.goal[0]] = 2
-
-
 
         # if we want to visualize it, initialize pygame and call the render method
         if self.enable_render is True:
@@ -68,8 +64,13 @@ class BlobEnvView:
 
         # check if new_loc is a valid location for the blob to be, if it is
         # set self.blob to that location and update the grid
-        if new_loc[0] >= 0 and new_loc[1] >= 0 and new_loc[0] < self.grid_size[0] and new_loc[1] < self.grid_size[1] \
-                and self.grid[new_loc[1]][new_loc[0]] != 9:
+        if (
+            new_loc[0] >= 0
+            and new_loc[1] >= 0
+            and new_loc[0] < self.grid_size[0]
+            and new_loc[1] < self.grid_size[1]
+            and self.grid[new_loc[1]][new_loc[0]] != 9
+        ):
             self.grid[self.blob[1]][self.blob[0]] = 0
             self.blob += np.array(self.COMPASS[action])
             self.grid[self.blob[1]][self.blob[0]] = 1

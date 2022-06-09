@@ -24,9 +24,11 @@ env = gym.make("CartPole-v0")  # Create the environment
 env.seed(seed)
 eps = np.finfo(np.float32).eps.item()  # Smallest number such that 1.0 + eps != 1.0
 
+
 def step(visualizer, grid):
     # runs every iteration, makes an RL prediction on where to go
     pass
+
 
 if __name__ == "__main__":
     # grid = ingest.txt_to_np("grid.txt")
@@ -40,7 +42,7 @@ if __name__ == "__main__":
     # create the model
     num_inputs = 4
     num_actions = 2
-    num_hidden = 128 # not sure what this does
+    num_hidden = 128  # not sure what this does
     inputs = layers.Input(shape=(num_inputs,))
     common = layers.Dense(num_hidden, activation="relu")(inputs)
     action = layers.Dense(num_actions, activation="softmax")(common)
@@ -60,7 +62,8 @@ if __name__ == "__main__":
         episode_reward = 0
         with tf.GradientTape() as tape:
             for timestep in range(1, max_steps_per_episode):
-                env.render();#  Adding this line would show the attempts
+                env.render()
+                #  Adding this line would show the attempts
                 # of the agent in a pop up window.
 
                 state = tf.convert_to_tensor(state)

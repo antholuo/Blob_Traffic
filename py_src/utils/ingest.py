@@ -12,10 +12,11 @@ Todo: The rest of our pathfinding code needs to be updated to accept numpy array
 import numpy as np
 
 # list of characters that are recognized as "walls" when we ingest from .txt files
-WALL_CHARACTERS = ["X", "x", "#", "9"] # these will correlate with 9
-BLOB_START = "@" # this will correlate with 1
+WALL_CHARACTERS = ["X", "x", "#", "9"]  # these will correlate with 9
+BLOB_START = "@"  # this will correlate with 1
 BLOB_GOAL = "$"  # this will correlate with 2
 # empty space will corelate with 0
+
 
 def yx_to_xy(yx_grid):
     """Turns a y/x grid (row, column) into an x/y grid.
@@ -106,7 +107,9 @@ def _visualize_np(np_grid):
     :param np_grid:
     :return:
     """
-    print("printing RAW numpy array. NOTE that this will be transformed with regard to our actual array.")
+    print(
+        "printing RAW numpy array. NOTE that this will be transformed with regard to our actual array."
+    )
     with np.printoptions(threshold=np.inf):
         print(np_grid)
 
@@ -125,16 +128,18 @@ def write_to_file(np_grid):
 
 
 def testfunc1():
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    maze = [
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
     xy_grid = yx_to_xy(maze)
     visualize(xy_grid)
     print()
