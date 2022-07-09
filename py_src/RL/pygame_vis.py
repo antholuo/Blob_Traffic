@@ -4,7 +4,7 @@ import numpy as np
 from ingest_grid import txt_to_np
 
 """
-
+IGNORE THIS ENTIRE FILE 
 """
 BLACK = (50, 50, 50)
 WHITE = (200, 200, 200)

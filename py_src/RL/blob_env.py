@@ -32,6 +32,8 @@ class BlobEnv(gym.Env):
 
         self.enable_render = enable_render
 
+        self.grid_file = grid_file
+
         # set up the visualization
         self.grid_view = BlobEnvView(
             grid_file_path=grid_file, block_size=block_size, enable_render=enable_render
@@ -45,18 +47,23 @@ class BlobEnv(gym.Env):
 
         # honestly not quite sure why we need a low and high ... i think its just to keep the observation (state) in check
         # low is top left corner
-        low = np.zeros(len(self.grid_size), dtype=int)
-        # high is bottom right corner
-        high = np.array(self.grid_size, dtype=int) - np.ones(
-            len(self.grid_size), dtype=int
-        )
+        low = np.zeros(len(self.grid_view.grid.flatten()), dtype=np.float)
+        low = np.append(low, -1)
 
-        # the shape of observation_space must match self.state, since what is what is being returned by step and reset
+        # print("lower boiumd ois", low)
+
+        # high is bottom right corner
+        high = np.ones(len(self.grid_view.grid.flatten()), dtype=np.float)
+        high = np.append(high, 4)
+
+        # print("upper bound is", high)
+
+        # the shape of observation_space must match self.observation, since what is what is being returned by step and reset
         # for us it has shape of 2 since all we are storing in the state rn is blob location
-        self.observation_space = spaces.Box(low, high, shape=(2,), dtype=np.int64)
+        self.observation_space = spaces.Box(low = low, high = high, dtype=np.float)
 
         # initialize state and reward
-        self.state = None
+        self.observation = None
         self.reward = 0
 
         # reset the environment just because :D
@@ -72,33 +79,38 @@ class BlobEnv(gym.Env):
     # every action of the blob (N,E,S,W)
     def step(self, action):
         # translate a value between 0-3 to a compass direction
-        self.grid_view.move_blob(self.ACTION[action])
+        step_reward = self.grid_view.move_blob(self.ACTION[action])
 
         # check to see if blob has made it to the goal
         if np.array_equal(self.grid_view.blob, self.grid_view.goal):
             self.reward += 1
             self.grid_view.game_over = True
             done = True
+        # have a min reward so blob cannot just fail forever
+        elif self.reward < self.grid_view.min_reward:
+            self.grid_view.game_over = True
+            done=True
         else:
-            self.reward += -0.1 / (self.grid_size[0] * self.grid_size[1])
+            self.reward += step_reward
             done = False
 
-        # set the state to the blob location
-        self.state = self.grid_view.blob
+        # the observation space will be the grid and the action taken
+        self.observation = np.append(self.grid_view.grid.flatten(), 4)
+        # self.observation = np.array(self.observation, dtype=np.float)
 
         # not sure what info needs to be but it needs to be returned by step bc parent class stuff idek
         info = {}
 
-        return self.state, self.reward, done, info
+        return self.observation, self.reward, done, info
 
     # reset
     # resets the environment everytime a run is over
     def reset(self):
-        self.grid_view.reset_blob()
-        self.state = np.zeros(2, dtype=int)
+        self.grid_view.reset_blob(self.grid_file)
+        self.observation = np.append(self.grid_view.grid.flatten(), -1)
         self.done = False
         self.reward = 0
-        return self.state
+        return self.observation
 
     # render
     # not sure what this is for ... changes the mode ig? not used rn maybe good to keep for future idek

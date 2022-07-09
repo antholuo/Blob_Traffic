@@ -7,6 +7,7 @@ checking and testing our custom blob environment
 # imports
 from stable_baselines3.common.env_checker import check_env
 from blob_env import BlobEnv
+import pygame
 
 # checking the environment
 env = BlobEnv(grid_file="grid.txt")
@@ -36,8 +37,8 @@ for episode in range(episodes):
         # once the blob reaches the destination, done will be True and the episode will end
         obs, reward, done, info = env.step(random_action)
         print("reward", reward)
-
     print("goal reached \n\n")
+    pygame.time.delay(500)
 
 print("finished running all episodes, exiting program now")
 

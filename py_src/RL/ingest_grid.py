@@ -8,7 +8,10 @@ Anthony Luo (antholuo@gmail.com), Christina Zhang (christinaytzhangroxs@gmail.co
 numpy array or a python list.
 Todo: The rest of our pathfinding code needs to be updated to accept numpy arrays.
 """
-
+'''
+IGNORE THIS ENTIRE FILE
+BETTER VERSION FOUND IN UTILS/INGEST.PY
+'''
 import numpy as np
 
 
@@ -107,7 +110,9 @@ def _visualize_np(np_grid):
 
 
 def list_to_np(grid):
-    return np.array(grid, dtype=np.byte)
+    uwu = np.array(grid, dtype=np.byte)
+    uwu = np.true_divide(uwu, 10)
+    return uwu
 
 
 def testfunc1():
