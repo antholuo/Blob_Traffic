@@ -44,16 +44,27 @@ class BlobEnv(gym.Env):
         self.action_space = spaces.Discrete(4)
 
         # honestly not quite sure why we need a low and high ... i think its just to keep the observation (state) in check
+        # ! this is for q-table
+        # # low is top left corner
+        # low = np.zeros(len(self.grid_size), dtype=int)
+        # # high is bottom right corner
+        # high = np.array(self.grid_size, dtype=int) - np.ones(
+        #     len(self.grid_size), dtype=int
+        # )
+        #
+        # # the shape of observation_space must match self.state, since what is what is being returned by step and reset
+        # # for us it has shape of 2 since all we are storing in the state rn is blob location
+        # self.observation_space = spaces.Box(low, high, shape=(2,), dtype=np.int64)
+
+        # ! this is for dqn
         # low is top left corner
-        low = np.zeros(len(self.grid_size), dtype=int)
+        low = np.zeros(self.grid_view.grid.shape, dtype=np.uint8)
         # high is bottom right corner
-        high = np.array(self.grid_size, dtype=int) - np.ones(
-            len(self.grid_size), dtype=int
-        )
+        high = np.full(self.grid_view.grid.shape, 255, dtype=np.uint8)
 
         # the shape of observation_space must match self.state, since what is what is being returned by step and reset
         # for us it has shape of 2 since all we are storing in the state rn is blob location
-        self.observation_space = spaces.Box(low, high, shape=(2,), dtype=np.int64)
+        self.observation_space = spaces.Box(low, high, shape=self.grid_view.grid.shape, dtype=np.uint8)
 
         # initialize state and reward
         self.state = None
@@ -83,8 +94,13 @@ class BlobEnv(gym.Env):
             self.reward += -0.1 / (self.grid_size[0] * self.grid_size[1])
             done = False
 
+        # ! this is for q table
+        # # set the state to the blob location
+        # self.state = self.grid_view.blob
+
+        # ! this is for dqn
         # set the state to the blob location
-        self.state = self.grid_view.blob
+        self.state = self.grid_view.grid
 
         # not sure what info needs to be but it needs to be returned by step bc parent class stuff idek
         info = {}
@@ -95,7 +111,7 @@ class BlobEnv(gym.Env):
     # resets the environment everytime a run is over
     def reset(self):
         self.grid_view.reset_blob()
-        self.state = np.zeros(2, dtype=int)
+        self.state = np.zeros(self.grid_view.grid.shape, dtype=np.uint8)
         self.done = False
         self.reward = 0
         return self.state
