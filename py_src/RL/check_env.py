@@ -30,12 +30,12 @@ for episode in range(episodes):
     while not done:
         # let the blob move in randomly chosen directions
         random_action = env.action_space.sample()
-        print("action", random_action)
+        # print("action", random_action)
 
         # move the blob
         # once the blob reaches the destination, done will be True and the episode will end
         obs, reward, done, info = env.step(random_action)
-        print("reward", reward)
+        # print("reward", reward)
 
     print("goal reached \n\n")
 

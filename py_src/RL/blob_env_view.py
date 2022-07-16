@@ -27,13 +27,14 @@ class BlobEnvView:
     def __init__(self, grid_file_path=None, block_size=None, enable_render=True):
 
         # yes uwu
+        self.grid_file_path = grid_file_path
         self.game_over = False
         self.reward = 0
         self.block_size = block_size
         self.enable_render = enable_render
 
         # import the grid from a text file
-        self.grid = txt_to_np(grid_file_path)
+        self.grid = txt_to_np(self.grid_file_path)
 
         # set grid_size and screen_size
         self.grid_size = self.grid.shape[:2]
@@ -44,10 +45,21 @@ class BlobEnvView:
 
         # place the blob at the top left corner and the goal at the bottom right corner
         # we can change this to be decided by the user or text file or wtv in the future
-        self.blob = np.zeros(2, dtype=int)
-        self.goal = self.grid_size - np.ones(2, dtype=int)
-        self.grid[self.blob[1]][self.blob[0]][0] = 1
-        self.grid[self.goal[1]][self.goal[0]][0] = 2
+        self.grid = txt_to_np(self.grid_file_path)
+        self.blob = []
+        self.goal = None
+        self.reset_goal = None
+        for row_index, row in enumerate(self.grid):
+            for col_index, elem in enumerate(row):
+                if elem == 1:
+                    self.blob.append((col_index, row_index))
+                if elem == 2:
+                    self.goal = (col_index, row_index)
+                    self.reset_goal = (col_index, row_index)
+
+        self.blob = np.array(self.blob, dtype=int)
+        self.goal = np.array(self.goal)
+        self.reset_goal = np.array(self.reset_goal)
 
         # if we want to visualize it, initialize pygame and call the render method
         if self.enable_render is True:
@@ -59,9 +71,11 @@ class BlobEnvView:
 
     # move_blob
     # called for each step
-    def move_blob(self, action):
+    def move_blob(self, blob, index, action):
         # set new_loc to be the new location of the blob
-        new_loc = self.blob + np.array(self.COMPASS[action])
+
+        new_loc = blob + np.array(self.COMPASS[action])
+
 
         # check if new_loc is a valid location for the blob to be, if it is
         # set self.blob to that location and update the grid
@@ -69,23 +83,40 @@ class BlobEnvView:
             0 <= new_loc[0] < self.grid_size[0]
             and 0 <= new_loc[1] < self.grid_size[1]
             and self.grid[new_loc[1]][new_loc[0]] != 9
+            and self.grid[new_loc[1]][new_loc[0]] != 1
         ):
-            self.grid[self.blob[1]][self.blob[0]] = 0
-            self.blob += np.array(self.COMPASS[action])
-            self.grid[self.blob[1]][self.blob[0]] = 1
+            self.grid[blob[1]][blob[0]] = 0
+            blob += np.array(self.COMPASS[action])
+            self.grid[blob[1]][blob[0]] = 1
+
+        if new_loc[0] == 9 and new_loc[1] == 9:
+            self.blob = np.delete(self.blob, index, 0)
 
         # visualization
         if self.enable_render is True:
             self.render()
 
+
+
     # reset_blob
     # called everytime environment is reset
     def reset_blob(self):
         # resetting grid, blob and goal loaction
-        self.blob = np.zeros(2, dtype=int)
-        self.goal = self.grid_size - np.ones(2, dtype=int)
-        self.grid[self.blob[1]][self.blob[0]][0] = 1
-        self.grid[self.goal[1]][self.goal[0]][0] = 2
+        self.grid = txt_to_np(self.grid_file_path)
+        self.blob = []
+        self.goal = None
+        self.reset_goal = None
+        for row_index, row in enumerate(self.grid):
+            for col_index, elem in enumerate(row):
+                if elem == 1:
+                    self.blob.append((col_index, row_index))
+                if elem == 2:
+                    self.goal = (col_index, row_index)
+                    self.reset_goal = (col_index, row_index)
+
+        self.blob = np.array(self.blob, dtype=int)
+        self.goal = np.array(self.goal)
+        self.reset_goal = np.array(self.reset_goal)
 
         # visualize
         if self.enable_render is True:
@@ -108,7 +139,7 @@ class BlobEnvView:
     def render(self):
         # x and y are the location on the screen where the blocks will be drawn
         x, y = 0, 0
-
+        self.grid[self.goal[0]][self.goal[1]] = 2
         # iterate through each value in self.grid
         for row in self.grid:
             y = 0
@@ -116,13 +147,13 @@ class BlobEnvView:
                 rect = pygame.Rect(x, y, self.block_size, self.block_size)
 
                 # based on the number at the location, colour the block a different colour
-                if elem[0] == 9:
+                if elem == 9:
                     pygame.draw.rect(self.screen, self.WHITE, rect)
-                if elem[0] == 0:
+                if elem == 0:
                     pygame.draw.rect(self.screen, self.BLACK, rect)
-                if elem[0] == 1:
+                if elem == 1:
                     pygame.draw.rect(self.screen, self.BLUE, rect)
-                if elem[0] == 2:
+                if elem == 2:
                     pygame.draw.rect(self.screen, self.PINK, rect)
 
                 y += self.block_size

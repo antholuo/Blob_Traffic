@@ -35,7 +35,7 @@ def simulate():
 
             # Select an action
             action = select_action(state_0, explore_rate)
-
+            print(action)
             # execute the action
             obv, reward, done, info = env.step(action)
 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     '''
     # Number of discrete states (bucket) per state dimension
     # one bucket per grid
-    MAZE_SIZE = tuple((env.observation_space.high + np.ones(env.observation_space.shape)).astype(int))
+    MAZE_SIZE = tuple([10, 10])
 
     # Number of discrete actions
     NUM_ACTIONS = env.action_space.n  # ["N", "S", "E", "W"]
@@ -135,7 +135,9 @@ if __name__ == "__main__":
     '''
     Creating a Q-Table for each state-action pair
     '''
-    q_table = np.zeros(MAZE_SIZE + (NUM_ACTIONS,), dtype=np.uint8)
+    print(MAZE_SIZE)
+    print(NUM_ACTIONS)
+    q_table = np.zeros(MAZE_SIZE + (NUM_ACTIONS,), dtype=np.float64)
 
     '''
     Begin simulation
