@@ -91,6 +91,7 @@ class BlobEnvView:
 
         if new_loc[0] == 9 and new_loc[1] == 9:
             self.blob = np.delete(self.blob, index, 0)
+            self.blob = np.insert(self.blob, index, (-1, -1), axis=0)
 
         # visualization
         if self.enable_render is True:

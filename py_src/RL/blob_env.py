@@ -5,6 +5,8 @@ this file sets up the environment in which the agent will be trained
 calls blob_env_view for the actual movement of the blob and visualization
 """
 
+# todo: our observation space always needs to stay the same size!
+
 # imports
 import numpy as np
 import gym
@@ -45,13 +47,13 @@ class BlobEnv(gym.Env):
 
         # ! this is for q-table
         # low is top left corner
-        low = np.zeros((len(self.grid_view.blob), 2), dtype=int)
+        low = np.zeros(len(self.grid_view.blob) * 2, dtype=int)
         # high is bottom right corner
-        high = np.full((len(self.grid_view.blob), 2), 9, dtype=int)
+        high = np.full(len(self.grid_view.blob) * 2, 9, dtype=int)
 
         # the shape of observation_space must match self.state, since what is what is being returned by step and reset
         # for us it has shape of 2 since all we are storing in the state rn is blob location
-        self.observation_space = spaces.Box(low, high, shape=(len(self.grid_view.blob), 2), dtype=np.int64)
+        self.observation_space = spaces.Box(low, high, shape=(len(self.grid_view.blob) * 2,), dtype=np.int64)
 
         # # ! this is for dqn
         # # low is top left corner
@@ -88,15 +90,21 @@ class BlobEnv(gym.Env):
     #             self.grid_view.grid[self.grid_view.goal[0], self.grid_view.goal[1]] = 2
     #     return True
 
+    def check_done(self):
+        for val in self.grid_view.blob.flatten():
+            if val != -1:
+                return False
+        return True
     # step
     # every action of the blob (N,E,S,W)
     def step(self, action):
         for index, blob in enumerate(self.grid_view.blob):
-            # translate a value between 0-3 to a compass direction
-            self.grid_view.move_blob(blob, index, self.ACTION[action])
+            if blob[0] != -1 and blob[1] != -1:
+                # translate a value between 0-3 to a compass direction
+                self.grid_view.move_blob(blob, index, self.ACTION[action])
 
         # check to see if blob has made it to the goal
-        if self.grid_view.blob.size == 0:
+        if self.check_done():
             self.reward += 1
             self.grid_view.game_over = True
             done = True
@@ -106,6 +114,7 @@ class BlobEnv(gym.Env):
 
         # # set the state to the blob location
         self.state = self.grid_view.blob
+        self.state = self.state.flatten()
 
         # not sure what info needs to be but it needs to be returned by step bc parent class stuff idek
         info = {}
@@ -116,7 +125,7 @@ class BlobEnv(gym.Env):
     # resets the environment everytime a run is over
     def reset(self):
         self.grid_view.reset_blob()
-        self.state = np.zeros((len(self.grid_view.blob), 2), dtype=int)
+        self.state = np.zeros(len(self.grid_view.blob) * 2, dtype=int)
         self.done = False
         self.reward = 0
         return self.state

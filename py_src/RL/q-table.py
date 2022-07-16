@@ -33,9 +33,12 @@ def simulate():
 
         for t in range(MAX_T):
 
+            # todo: i think the issue actually lies here, we need to choose two actions here, not just one for the blob to do right?
+            # todo: should we have 2 q tables instead? one for each blob?
+
             # Select an action
             action = select_action(state_0, explore_rate)
-            print(action)
+
             # execute the action
             obv, reward, done, info = env.step(action)
 
@@ -65,10 +68,6 @@ def simulate():
                 else:
                     num_streaks = 0
                 break
-
-            elif t >= MAX_T - 1:
-                print("Episode %d timed out at %d with total reward = %f."
-                      % (episode, t, total_reward))
 
         # It's considered done when it's solved over 120 times consecutively
         if num_streaks > STREAK_TO_END:
@@ -101,15 +100,13 @@ if __name__ == "__main__":
     # Initialize the "maze" environment
     env = BlobEnv(grid_file="grid.txt")
 
-    print("Action Space {}".format(env.action_space))
-    print("State Space {}".format(env.observation_space))
-
     '''
     Defining the environment related constants
     '''
     # Number of discrete states (bucket) per state dimension
     # one bucket per grid
-    MAZE_SIZE = tuple([10, 10])
+    MAZE_SIZE = tuple((env.observation_space.high + np.ones(env.observation_space.shape)).astype(int))
+
 
     # Number of discrete actions
     NUM_ACTIONS = env.action_space.n  # ["N", "S", "E", "W"]
@@ -127,16 +124,13 @@ if __name__ == "__main__":
     NUM_EPISODES = 50000
     MAX_T = np.prod(MAZE_SIZE, dtype=int) * 100
     STREAK_TO_END = 100
-    SOLVED_T = np.prod(MAZE_SIZE, dtype=int)
+    SOLVED_T = np.prod(MAZE_SIZE, dtype=int) // 50
     DEBUG_MODE = 0
     RENDER_MAZE = True
-    ENABLE_RECORDING = True
 
     '''
     Creating a Q-Table for each state-action pair
     '''
-    print(MAZE_SIZE)
-    print(NUM_ACTIONS)
     q_table = np.zeros(MAZE_SIZE + (NUM_ACTIONS,), dtype=np.float64)
 
     '''
